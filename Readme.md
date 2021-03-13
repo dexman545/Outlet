@@ -13,12 +13,12 @@ Provides the following features:
   for use on Curseforge via [CurseGradle](https://fabricmc.net/wiki/tutorial:cursegradle)
 
 ## Usage
-There are three parts using Outlet: applying the plugin, 
-feeding it options, then calling methods. The latter two occur anywhere 
+There are three parts to using Outlet: applying the plugin, 
+feeding it options, then calling the methods. The latter two occur anywhere 
 after application.
 
 ### Application
-At the top of `build.gradle`, add:
+At the top of `build.gradle`, add (merging as needed):
 ```groovy
 buildscript {
     repositories {
@@ -29,7 +29,7 @@ buildscript {
     }
 }
 ```
-Beneath the `plugins` block, add:
+Beneath the `plugins` block, add (merging as needed):
 ```groovy
 apply plugin: 'dex.plugins.outlet'
 ```
@@ -37,12 +37,12 @@ apply plugin: 'dex.plugins.outlet'
 ### Telling it what you want
 **_Dummy values in use!_**
 
-Add any of the following (`mcVersiongRange` is required):
+Add any of the following (`mcVersionRange` is required):
 ```groovy
 // The Minecraft version range from the fabric.mod.json.
 // Use '*' to match any MC version
 // Default: null - set it!
-outlet.mcversionRange = '*'
+outlet.mcVersionRange = '*'
 // Whether outlet.mcVersion() should return snapshots
 // Default: true
 outlet.allowSnapshotsForProject = true
@@ -60,8 +60,6 @@ _Note: these can also be set using the `outlet` block!_
 ### Getting stuff out of it
 You can set the outputs of these methods to settings or use them directly.
 
-**_Note that the return types shouldn't be in your script, they are added 
-for your viewing pleasure only._**
 ```groovy
 // Get the set of Minecraft version strings
 // Can be used for automated Modrinth upload
@@ -93,7 +91,7 @@ outlet.fapiVersion(mcVer) // Returns String
 
 #### Example
 ```groovy
-// Range is in gradle.properties, could also read in from fabric.mod.json
+// In this project, range is in gradle.properties, could also read it from fabric.mod.json
 outlet.mcVersionRange = project.range
 
 // Use fabric example mod's variables to keep template mostly unchanged
