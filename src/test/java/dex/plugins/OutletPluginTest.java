@@ -14,7 +14,7 @@ public class OutletPluginTest {
             a.mcVersionRange = ">=1.16-alpha.20.22.a";
         });
 
-        System.out.println();
+        System.out.println(project.getExtensions().getByType(OutletExtension.class).latestMc());
         assert project.getExtensions().getByType(OutletExtension.class).mcVersions() != null;
         assert project.getExtensions().getByType(OutletExtension.class).fapiVersion() != null;
         assert project.getExtensions().getByType(OutletExtension.class).curseforgeMcVersions() != null;

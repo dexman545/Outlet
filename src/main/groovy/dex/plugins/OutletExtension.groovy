@@ -1,6 +1,7 @@
 package dex.plugins
 
 class OutletExtension {
+    //todo make setting lazy https://tomgregory.com/introduction-to-gradle-plugins/
     public String mcVersionRange
     public boolean allowSnapshotsForProject = true
     public boolean useLatestYarn = true
@@ -36,7 +37,7 @@ class OutletExtension {
     }
 
     String latestMc() {
-        return worker.getLatestMc(this.allowSnapshotsForProject)
+        return worker.getLatestMc(!this.allowSnapshotsForProject)
     }
 
     String loaderVersion() {
