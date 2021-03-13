@@ -71,7 +71,7 @@ class McVersionWorker {
             // isOutside check is to fix java version of npm-semver not having includePrerelease flag, as by default
             // different prereleases from different minor versions will not match
             // NOTE: May break things (*may*)
-            if (r.test(v) /*|| r.isOutside(v, Direction.LOW)*/) {
+            if (r.test(v) || (range.startsWith('>') && r.isOutside(v, Direction.LOW))) {
                 list.add(mcver.id as String)
             }
         }
