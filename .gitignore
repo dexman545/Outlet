@@ -1,0 +1,32 @@
+# gradle
+
+.gradle/
+build/
+out/
+classes/
+
+# idea
+
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# vscode
+
+.settings/
+.vscode/
+bin/
+.classpath
+.project
+
+# fabric
+
+run/
+/vanilla server/*
+/AutoSwitch.java
+/eula.txt
+/logs/
+AutoSwitch API
+/musical-code-data.properties
+/musical-code-output.txt
