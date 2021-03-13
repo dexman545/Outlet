@@ -32,6 +32,15 @@ class McVersionWorker {
         return "" // No MC version was found
     }
 
+    String getLatestMcForRange(boolean isStable, String range) {
+        def x = getAcceptableMcVersions(range) // Pull list specific for the given range
+        if (!isStable && x.contains(mcVersions.first().version)) return mcVersions.first().version
+        for (LinkedHashMap mcVer : mcVersions) {
+            if (mcVer.stable && x.contains(mcVer.version)) return mcVer.version
+        }
+        return "" // No MC version was found
+    }
+
     /**
      * Return a list of acceptable MC versions based on the semver string in project.range.
      * Parsed from the official launcher metadata, could break at anytime.
@@ -60,7 +69,7 @@ class McVersionWorker {
             mcVer2Semver.put((String) mcver.get("id"), semverMc)
 
             // isOutside check is to fix java version of npm-semver not having includePrerelease flag, as by default
-            // different prereleases form different minor versions will not match
+            // different prereleases from different minor versions will not match
             // NOTE: May break things (*may*)
             if (r.test(v) || r.isOutside(v, Direction.LOW)) {
                 list.add(mcver.id as String)
