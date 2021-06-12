@@ -47,6 +47,7 @@ class McVersionWorker {
      *
      * @return the list of acceptable MC versions
      */
+    //todo respect snapshot control
     LinkedHashSet<String> getAcceptableMcVersions(String range) throws MalformedURLException {
         LinkedHashSet<String> list = new LinkedHashSet<String>()
 
@@ -93,9 +94,14 @@ class McVersionWorker {
         Pattern RELEASE_CANDIDATE_PATTERN = Pattern.compile(".+(?:-rc| [Rr]elease Candidate )(\\d+)")
         Pattern SNAPSHOT_PATTERN = Pattern.compile("(?:Snapshot )?(\\d+)w0?(0|[1-9]\\d*)([a-z])")
 
-        if (RELEASE_PATTERN.matcher(version).matches()) return version
+        String majorVersion = getMajorMcVersion(metaURL)
 
-        String majorVersion = getMajorMcVersion(metaURL) + ".0" // fix for parser
+        if (RELEASE_PATTERN.matcher(version).matches()) {
+            if (majorVersion == version) return version+".0"
+            return version
+        }
+
+        majorVersion += ".0" // fix for parser
 
         Matcher snapshotMatcher = SNAPSHOT_PATTERN.matcher(version)
         if (snapshotMatcher.matches()) {
