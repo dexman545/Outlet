@@ -7,7 +7,7 @@ Provides the following features:
 - Getting the latest or earliest Yarn version for a Minecraft version
 - Getting the latest available version of Fabric loader
 - Getting the latest available version of Fabric API for a Minecraft version
-- Getting the required Java version for a given Minecraft version
+- Getting the required Java version for a Minecraft version
 - Getting the Java compatibility level for a range of Miencraft versions
 - Generating the list of acceptable Minecraft versions based on a given range,
   useful for instance with publishing on Modrinth via [Minotaur](https://fabricmc.net/wiki/tutorial:minotaur)
@@ -20,9 +20,9 @@ feeding it options, then calling the methods. The latter two occur anywhere
 after application.
 
 ### Application
-At the top of `build.gradle`, add (merging as needed):
-
 [![](https://jitpack.io/v/dexman545/Outlet.svg)](https://jitpack.io/#dexman545/Outlet)
+
+At the top of `build.gradle`, add (merging as needed):
 ```groovy
 buildscript {
     repositories {
@@ -47,15 +47,14 @@ Add any of the following (`mcVersionRange` is required):
 // Use '*' to match any MC version
 // Default: null - set it!
 outlet.mcVersionRange = '*'
-// Whether outlet.mcVersion() should return snapshots
+// Whether outlet.mcVersions() should return snapshots
 // Default: true
 outlet.allowSnapshotsForProject = true
 // Whether outlet.yarnVersion() should return the latest yarn version or 
-// the earliest yarn version for a given
-// Minecraft version
+// the earliest yarn version for a given Minecraft version
 // Default: true
 outlet.useLatestYarn = true
-// Whether outlet.mcVersion() respects the provided range
+// Whether outlet.latestMc() respects the provided range
 // Default: true
 outlet.latestMcRespectsRange = true
 ```
