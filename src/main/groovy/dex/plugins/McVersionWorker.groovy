@@ -1,21 +1,22 @@
 package dex.plugins
 
-import com.github.yuchi.semver.Direction
-import com.github.yuchi.semver.Range
-import com.github.yuchi.semver.Version
 import groovy.json.JsonSlurper
-
-import java.util.regex.Matcher
-import java.util.regex.Pattern
+import net.fabricmc.loader.api.SemanticVersion
+import net.fabricmc.loader.api.metadata.version.VersionPredicate
+import net.fabricmc.loader.impl.game.minecraft.McVersion
+import net.fabricmc.loader.impl.util.version.SemanticVersionImpl
+import net.fabricmc.loader.impl.util.version.VersionPredicateParser
 
 class McVersionWorker {
     protected ArrayList<LinkedHashMap> mcVersions
     protected Map<String, String> mcVer2Semver
+    protected Map<String, Integer> mcVer2JavaVer
+    private Tuple2<String, Set<String>> mcVersionsCache
 
     McVersionWorker() throws MalformedURLException {
         this.mcVer2Semver = new HashMap<>()
+        this.mcVer2JavaVer = new HashMap<>()
         this.mcVersions = new JsonSlurper().parse(new URL("https://meta.fabricmc.net/v2/versions/game")) as ArrayList<LinkedHashMap>
-        getAcceptableMcVersions("*")
     }
 
     /**
@@ -49,34 +50,27 @@ class McVersionWorker {
      */
     //todo respect snapshot control
     LinkedHashSet<String> getAcceptableMcVersions(String range) throws MalformedURLException {
+        if (mcVersionsCache != null && mcVersionsCache.first == range) {
+            return mcVersionsCache.second
+        }
+
         LinkedHashSet<String> list = new LinkedHashSet<String>()
 
-        // Fragile
+        VersionPredicate x = VersionPredicateParser.parse(range)
         def mcVersions = new JsonSlurper().parse(new URL("https://launchermeta.mojang.com/mc/game/version_manifest_v2.json"))
         for (Object mcver : mcVersions.versions) {
             // Don't go below 1.14.4, mostly because change in version formatting
             if ("1.14.4" == (mcver.id as String)) break
 
-            Range r = Range.from(range.replace("-", ".0-"), false)
-
             String semverMc = genMcVersionString(mcver.id as String, mcver.url as String)
-            Version v = Version.from(semverMc, false)
-
-            if (v == null || r == null) {
-                //System.out.println(String.format("The version was null for : %s", mcver.id))
-                break
-            }
+            SemanticVersion v = new SemanticVersionImpl(semverMc, false)
 
             mcVer2Semver.put((String) mcver.get("id"), semverMc)
 
-            // isOutside check is to fix java version of npm-semver not having includePrerelease flag, as by default
-            // different prereleases from different minor versions will not match
-            // NOTE: May break things (*may*)
-            if (r.test(v) || (range.startsWith('>') && r.isOutside(v, Direction.LOW))) {
-                list.add(mcver.id as String)
-            }
+            if (x.test(v)) list.add(mcver.id as String)
         }
 
+        mcVersionsCache = new Tuple2<>(range, list)
         return list
     }
 
@@ -88,37 +82,15 @@ class McVersionWorker {
      * @return the semver-compatible version for the given MC version.
      */
     private String genMcVersionString(String version, String metaURL) {
-        // From Fabric Loader https://github.com/FabricMC/fabric-loader/blob/master/src/main/java/net/fabricmc/loader/minecraft/McVersionLookup.java
-        Pattern RELEASE_PATTERN = Pattern.compile("\\d+\\.\\d+(\\.\\d+)?")
-        Pattern PRE_RELEASE_PATTERN = Pattern.compile(".+(?:-pre| Pre-[Rr]elease )(\\d+)")
-        Pattern RELEASE_CANDIDATE_PATTERN = Pattern.compile(".+(?:-rc| [Rr]elease Candidate )(\\d+)")
-        Pattern SNAPSHOT_PATTERN = Pattern.compile("(?:Snapshot )?(\\d+)w0?(0|[1-9]\\d*)([a-z])")
+        Tuple2<String, Integer> m = getMajorMcVersion(metaURL)
+        String majorVersion = m.first
+        mcVer2JavaVer.put(version, m.second)
 
-        String majorVersion = getMajorMcVersion(metaURL)
+        McVersion.Builder builder = new McVersion.Builder()
+        builder.setName(version)
+        builder.setRelease(majorVersion)
 
-        if (RELEASE_PATTERN.matcher(version).matches()) {
-            if (majorVersion == version) return version+".0"
-            return version
-        }
-
-        majorVersion += ".0" // fix for parser
-
-        Matcher snapshotMatcher = SNAPSHOT_PATTERN.matcher(version)
-        if (snapshotMatcher.matches()) {
-            return majorVersion + "-alpha." + snapshotMatcher.group(1) + "." + snapshotMatcher.group(2) + "." + snapshotMatcher.group(3)
-        }
-
-        Matcher rcMatcher = RELEASE_CANDIDATE_PATTERN.matcher(version)
-        if (rcMatcher.matches()) {
-            return majorVersion + "-rc." + rcMatcher.group(1)
-        }
-
-        Matcher preMatcher = PRE_RELEASE_PATTERN.matcher(version)
-        if (preMatcher.matches()) {
-            return majorVersion + "-beta." + preMatcher.group(1)
-        }
-
-        return ""
+        return builder.build().normalized
     }
 
     /**
@@ -127,12 +99,12 @@ class McVersionWorker {
      * @param metaURL the launcher meta URL for the version in question.
      * @return the major game version, such as '1.17'
      */
-    static String getMajorMcVersion(String metaURL) {
+    static Tuple2<String, Integer> getMajorMcVersion(String metaURL) {
         try {
             def meta = new JsonSlurper().parse(new URL(metaURL))
-            return meta.assets
+            return new Tuple2<String, Integer>(meta.assets, meta.javaVersion.majorVersion ?: 8)
         } catch (MalformedURLException ignored) {
-            return ""
+            return new Tuple2<String, Integer>("", 8)
         }
     }
 

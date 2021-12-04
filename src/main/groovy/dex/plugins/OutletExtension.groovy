@@ -20,7 +20,7 @@ class OutletExtension {
      * Whether {@see latestMc()} should respect the version range
      */
     public boolean latestMcRespectsRange = true
-    private FabricVersionWorker worker
+    protected FabricVersionWorker worker
     private boolean isAlive = false
 
     OutletExtension() {
@@ -61,11 +61,41 @@ class OutletExtension {
      * Get the latest Minecraft version
      */
     String latestMc() {
+        this.establishLiving()
         if (this.latestMcRespectsRange) {
             return worker.getLatestMcForRange(!this.allowSnapshotsForProject, this.mcVersionRange)
         } else {
             return worker.getLatestMc(!this.allowSnapshotsForProject)
         }
+    }
+
+    /**
+     * Get the Java version for the latest MC version
+     */
+    Integer javaVersion() {
+        javaVersion(latestMc())
+    }
+
+    /**
+     * Get the Java version for the given MC version
+     */
+    Integer javaVersion(String mcVer) {
+        this.establishLiving()
+        worker.mcVer2JavaVer.get(mcVer)
+    }
+
+    /**
+     * Get the Java language compatibility level that all versions in {@see #mcVersions} can support
+     */
+    Integer javaLanguageCompatibility() {
+        this.establishLiving()
+        def minJava = worker.mcVer2JavaVer.get(mcVersions().first())
+        mcVersions().forEach {
+            def j = worker.mcVer2JavaVer.get(it)
+            minJava = Math.min(minJava, j)
+        }
+
+        return minJava
     }
 
     /**

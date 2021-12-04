@@ -16,6 +16,8 @@ public class OutletPluginTest {
 
         System.out.println(project.getExtensions().getByType(OutletExtension.class).latestMc());
         System.out.println(project.getExtensions().getByType(OutletExtension.class).mcVersions());
+        System.out.println(project.getExtensions().getByType(OutletExtension.class).javaVersion());
+        System.out.println(project.getExtensions().getByType(OutletExtension.class).javaLanguageCompatibility());
         assert project.getExtensions().getByType(OutletExtension.class).mcVersions() != null;
         assert project.getExtensions().getByType(OutletExtension.class).fapiVersion() != null;
         assert project.getExtensions().getByType(OutletExtension.class).curseforgeMcVersions() != null;
