@@ -21,7 +21,6 @@ public class OutletPluginTest {
         assert project.getExtensions().getByType(OutletExtension.class).mcVersions() != null;
         assert project.getExtensions().getByType(OutletExtension.class).fapiVersion() != null;
         assert project.getExtensions().getByType(OutletExtension.class).curseforgeMcVersions() != null;
-        assert project.getExtensions().getByType(OutletExtension.class).fapiVersion() != null;
         assert project.getExtensions().getByType(OutletExtension.class).yarnVersion() != null;
         assert project.getExtensions().getByType(OutletExtension.class).loaderVersion() != null;
         assert project.getExtensions().getByType(OutletExtension.class).latestMc() != null;

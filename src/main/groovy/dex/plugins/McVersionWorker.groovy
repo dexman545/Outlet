@@ -7,7 +7,11 @@ import net.fabricmc.loader.impl.game.minecraft.McVersion
 import net.fabricmc.loader.impl.util.version.SemanticVersionImpl
 import net.fabricmc.loader.impl.util.version.VersionPredicateParser
 
+import java.util.regex.Matcher
+import java.util.regex.Pattern
+
 class McVersionWorker {
+    private static final Pattern VERSION_PATTERN = Pattern.compile("\\d+\\.\\d+(\\.\\d+)?")
     protected ArrayList<LinkedHashMap> mcVersions
     protected Map<String, String> mcVer2Semver
     protected Map<String, Integer> mcVer2JavaVer
@@ -85,6 +89,12 @@ class McVersionWorker {
         Tuple2<String, Integer> m = getMajorMcVersion(metaURL)
         String majorVersion = m.first
         mcVer2JavaVer.put(version, m.second)
+
+        // Fixes minor versions that have prereleases
+        Matcher match = VERSION_PATTERN.matcher(version)
+        if (version.startsWith(majorVersion) && match.find(0)) {
+            majorVersion = match.group()
+        }
 
         McVersion.Builder builder = new McVersion.Builder()
         builder.setName(version)
