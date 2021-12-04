@@ -87,6 +87,28 @@ outlet.fapiVersion() // Returns String
 // Get the latest Fabric API version for the given MC version
 // mcVer - the Minecraft version, such as '21w10a'
 outlet.fapiVersion(mcVer) // Returns String
+
+// Get the Java version for the latest MC version
+// For use in setting the compiler level
+// Defaults to 8 if it cannot be found
+outlet.outlet.javaVersion() // Returns int
+
+// Get the Java version for the given MC version
+// For use in setting the compiler level
+// Defaults to 8 if it cannot be found
+// mcVer - the Minecraft version, such as '21w10a'
+outlet.javaVersion(mcVer) // Returns int
+
+// Get the Java language compatibility level that all versions in mcVersions() can support
+// For use in setting compatibility level
+// Defaults to 8 if it cannot be found
+// Examples:
+//      Range: 1.16 - 1.18; Returns: 8
+//      Range: 1.17 - 1.18; Returns: 16
+//      Range: 1.18.x;      Returns: 17
+outlet.javaLanguageCompatibility() // Returns int
+
+
 ```
 
 #### Example

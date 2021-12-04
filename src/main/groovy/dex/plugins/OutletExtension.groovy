@@ -71,6 +71,7 @@ class OutletExtension {
 
     /**
      * Get the Java version for the latest MC version
+     * Defaults to 8 if it cannot be found
      */
     Integer javaVersion() {
         javaVersion(latestMc())
@@ -78,6 +79,7 @@ class OutletExtension {
 
     /**
      * Get the Java version for the given MC version
+     * Defaults to 8 if it cannot be found
      */
     Integer javaVersion(String mcVer) {
         this.establishLiving()
@@ -86,6 +88,7 @@ class OutletExtension {
 
     /**
      * Get the Java language compatibility level that all versions in {@see #mcVersions} can support
+     * Defaults to 8 if it cannot be found
      */
     Integer javaLanguageCompatibility() {
         this.establishLiving()
