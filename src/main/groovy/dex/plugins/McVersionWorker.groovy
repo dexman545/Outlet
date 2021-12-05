@@ -131,7 +131,7 @@ class McVersionWorker {
         if (ver == null) return ""
         String major = ver.split("-")[0]
         if (ver.contains("-")) {
-            return major.replaceAll(".0", "") + (appdendData ? "-Snapshot" : "")
+            return major.substring(0, 4) + (appdendData ? "-Snapshot" : "")
         } else if (!appdendData) {
             return major.substring(0, 4) // Get major version for non-snapshots
         }
