@@ -5,7 +5,7 @@ plugins {
 }
 
 group 'dex.plugins'
-version '1.2-SNAPSHOT'
+version '1.2.3'
 
 repositories {
     mavenCentral()
