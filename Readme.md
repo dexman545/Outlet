@@ -106,7 +106,7 @@ outlet.fapiVersion(mcVer) // Returns String
 // Get the Java version for the latest MC version
 // For use in setting the compiler level
 // Defaults to 8 if it cannot be found
-outlet.outlet.javaVersion() // Returns int
+outlet.javaVersion() // Returns int
 
 // Get the Java version for the given MC version
 // For use in setting the compiler level
