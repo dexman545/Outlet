@@ -8,9 +8,7 @@ class TaskPropertiesUpdate extends DefaultTask{
 
     @TaskAction
     def apply() {
-        doFirst {
-            logger.lifecycle('Updating properties file...')
-            VersionCodec.updateProperties(extension.propertiesFile, extension.propertiesData)
-        }
+        logger.lifecycle('Updating properties file...')
+        VersionCodec.updateProperties(extension.propertiesFile, extension.propertiesData)
     }
 }
