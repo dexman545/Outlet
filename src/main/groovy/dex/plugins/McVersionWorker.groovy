@@ -97,7 +97,7 @@ class McVersionWorker {
         }
 
         // Temp hardcode while awaiting semver to be added to fabric meta
-        if (version == '22w06a' || version == '22w05a' || version == '22w03a') majorVersion = '1.18.2'
+        if (version == '22w06a' || version == '22w05a' || version == '22w03a' || version == '22w07a') majorVersion = '1.18.2'
 
         McVersion.Builder builder = new McVersion.Builder()
         builder.setName(version)
