@@ -13,6 +13,7 @@ Provides the following features:
   useful for instance with publishing on Modrinth via [Minotaur](https://fabricmc.net/wiki/tutorial:minotaur)
 - Generating the list of acceptable Minecraft versions based on a given range 
   for use on Curseforge via [CurseGradle](https://fabricmc.net/wiki/tutorial:cursegradle)
+- Optional nondestructive automatic updating of gradle.properties versions with the new values Outlet has produced
 
 ## Usage
 There are three parts to using Outlet: applying the plugin, 
@@ -57,6 +58,17 @@ outlet.useLatestYarn = true
 // Whether outlet.latestMc() respects the provided range
 // Default: true
 outlet.latestMcRespectsRange = true
+
+// Whether the properties file versions should be updated.
+// This also doubles as an environment check, eg. update them in dev 
+// but not on a build server
+// Default: false
+outlet.maintainPropertiesFile = true
+
+// The map of entries to update in the properties file and their new version
+// Any key/value pair in the properties file can be updated in this way, not just those Outlet manages!
+// Default: empty
+outlet.propertiesData = ['fabric_version': outlet.fapiVersion()]
 ```
 _Note: these can also be set using the `outlet` block!_
 
