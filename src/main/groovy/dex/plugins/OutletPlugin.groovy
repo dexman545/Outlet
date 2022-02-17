@@ -11,7 +11,7 @@ class OutletPlugin implements Plugin<Project> {
 
         project.afterEvaluate {ep ->
             TaskContainer tasks = ep.getTasks()
-            def task = tasks.register("outletPropertiesUpdate", TaskPropertiesUpdate.class)
+            def task = tasks.register("outletPropertiesUpdate", TaskPropertiesUpdate.class).get()
 
             task.setGroup("outlet")
             task.setDescription('Updates properties file of versions')
