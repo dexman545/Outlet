@@ -17,7 +17,9 @@ class FabricVersionWorker extends McVersionWorker {
     String getLatestFapi(String projectMcVer) throws Exception {
         def fapiVersions = new XmlSlurper().parseText(
                 new URL("https://maven.fabricmc.net/net/fabricmc/fabric-api/fabric-api/maven-metadata.xml").text)
-        String majorMc = fixSnapshot(mcVer2Semver.get(projectMcVer).substring(0, 4), false)
+        def mcv = mcVer2Semver.get(projectMcVer)
+        if (mcv == null) return null
+        String majorMc = fixSnapshot(mcv.substring(0, 4), false)
         for (String version : (fapiVersions.versioning.versions.version.list() as List).reverse()) {
             String target = version.split("\\+")[1]
             if (target.contains("build")) break // These versions are old and have useless metadata
