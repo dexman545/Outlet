@@ -7,7 +7,7 @@ import org.gradle.api.tasks.TaskContainer
 class OutletPlugin implements Plugin<Project> {
     @Override
     void apply(final Project project) {
-        project.getExtensions().create("outlet", OutletExtension.class, project)
+        def ext = project.getExtensions().create("outlet", OutletExtension.class, project)
 
         project.afterEvaluate {ep ->
             TaskContainer tasks = ep.getTasks()
@@ -15,6 +15,7 @@ class OutletPlugin implements Plugin<Project> {
 
             task.setGroup("outlet")
             task.setDescription('Updates properties file of versions')
+            task.onlyIf {ext.maintainPropertiesFile}
 
             // This handles runClient and Idea run configs
             tasks.classes.finalizedBy task

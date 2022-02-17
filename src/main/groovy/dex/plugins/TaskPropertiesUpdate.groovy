@@ -8,10 +8,6 @@ class TaskPropertiesUpdate extends DefaultTask{
 
     @TaskAction
     def apply() {
-        onlyIf {
-            extension.maintainPropertiesFile
-        }
-
         doFirst {
             logger.lifecycle('Updating properties file...')
             VersionCodec.updateProperties(extension.propertiesFile, extension.propertiesData)
