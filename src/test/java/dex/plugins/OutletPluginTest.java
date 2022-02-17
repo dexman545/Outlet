@@ -4,6 +4,8 @@ import org.gradle.api.Project;
 import org.gradle.testfixtures.ProjectBuilder;
 import org.junit.jupiter.api.Test;
 
+import java.io.File;
+
 public class OutletPluginTest {
 
     @Test
@@ -11,12 +13,14 @@ public class OutletPluginTest {
         Project project = ProjectBuilder.builder().build();
         project.getPluginManager().apply("dex.plugins.outlet");
         project.getExtensions().configure(OutletExtension.class, (a) -> {
-            a.mcVersionRange = ">=1.16-alpha.20.22.a";
+            a.mcVersionRange = ">=1.18.2-alpha.22.6.a";
+            a.propertiesData.put("meh", 1);
+            a.propertiesFile = new File("gradle.properties");
         });
-
         System.out.println(project.getExtensions().getByType(OutletExtension.class).latestMc());
         System.out.println(project.getExtensions().getByType(OutletExtension.class).mcVersions());
         System.out.println(project.getExtensions().getByType(OutletExtension.class).javaVersion());
+        System.out.println(project.getExtensions().getByType(OutletExtension.class).curseforgeMcVersions());
         System.out.println(project.getExtensions().getByType(OutletExtension.class).javaLanguageCompatibility());
         assert project.getExtensions().getByType(OutletExtension.class).mcVersions() != null;
         assert project.getExtensions().getByType(OutletExtension.class).fapiVersion() != null;

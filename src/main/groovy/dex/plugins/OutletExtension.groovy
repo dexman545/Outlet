@@ -1,5 +1,7 @@
 package dex.plugins
 
+import org.gradle.api.Project
+
 class OutletExtension {
     //todo make setting lazy https://tomgregory.com/introduction-to-gradle-plugins/
     /**
@@ -20,10 +22,47 @@ class OutletExtension {
      * Whether {@see latestMc()} should respect the version range
      */
     public boolean latestMcRespectsRange = true
+    /**
+     * The map of input properties to update in the given config file, defaults to gradle.properties.
+     * Nondestructive update.
+     */
+    public Map<String, Object> propertiesData = new HashMap<>()
+    /**
+     * The properties file to read values from and optionally update, defaults to gradle.properties.
+     * Nondestructive update.
+     */
+    public File propertiesFile = project.file('gradle.properties')
+    /**
+     * Whether Outlet should update the version properties file on successful compilation.
+     * This also doubles as a side control. E.g., have this evaluate to true in your local dev environment,
+     * but false on build server such as Github Actions.
+     */
+    public boolean maintainPropertiesFile = false
+    /**
+     * The map of input properties that correspond to what Outlet can produce.
+     * By default, it contains the keys used by the Fabric Example Mod.
+     *
+     * These are used for reading in values from the properties file as a fallback in case of version fetch failure.
+     *
+     * These keys should be overridden for use in other environments.
+     *
+     * Looks for the following:
+     * - fabric (as in Fabric API)
+     * - loader (as in Fabric Loader)
+     * - minecraft
+     * - yarn
+     * - java
+     */
+    public Map<String, String> propertyKeys = [java: 'java', fabric: 'fabric_version',
+                                               yarn: 'yarn_mappings', minecraft: 'minecraft_version',
+                                               loader: 'fabric_loader']
+
     protected FabricVersionWorker worker
     private boolean isAlive = false
+    private Project project
 
-    OutletExtension() {
+    OutletExtension(Project project) {
+        this.project = project
         try {
             this.worker = new FabricVersionWorker()
         } catch (MalformedURLException e) {
@@ -62,11 +101,18 @@ class OutletExtension {
      */
     String latestMc() {
         this.establishLiving()
+        def v
         if (this.latestMcRespectsRange) {
-            return worker.getLatestMcForRange(!this.allowSnapshotsForProject, this.mcVersionRange)
+            v = worker.getLatestMcForRange(!this.allowSnapshotsForProject, this.mcVersionRange)
         } else {
-            return worker.getLatestMc(!this.allowSnapshotsForProject)
+            v = worker.getLatestMc(!this.allowSnapshotsForProject)
         }
+
+        if (v == "" || v == null) {
+            return VersionCodec.readProperty(propertiesFile, propertyKeys, 'minecraft')
+        }
+
+        return v
     }
 
     /**
@@ -111,7 +157,7 @@ class OutletExtension {
         } catch (MalformedURLException e) {
             e.printStackTrace()
         }
-        return null
+        return VersionCodec.readProperty(propertiesFile, propertyKeys, 'loader')
     }
 
     /**
@@ -131,7 +177,7 @@ class OutletExtension {
         } catch (MalformedURLException e) {
             e.printStackTrace()
         }
-        return null
+        return VersionCodec.readProperty(propertiesFile, propertyKeys, 'yarn')
     }
 
     /**
@@ -151,7 +197,7 @@ class OutletExtension {
         } catch (Exception e) {
             e.printStackTrace()
         }
-        return null
+        return VersionCodec.readProperty(propertiesFile, propertyKeys, 'fabric')
     }
 
     private void establishLiving() {

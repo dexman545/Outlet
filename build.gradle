@@ -5,7 +5,7 @@ plugins {
 }
 
 group 'dex.plugins'
-version '1.2.4-SNAPSHOT'
+version '1.3.0-SNAPSHOT'
 
 repositories {
     mavenCentral()
@@ -56,6 +56,7 @@ dependencies {
     implementation "org.ow2.asm:asm-commons:${project.asm_version}"
     implementation "org.ow2.asm:asm-tree:${project.asm_version}"
     implementation "org.ow2.asm:asm-util:${project.asm_version}"
+    implementation 'org.apache.commons:commons-configuration2:2.7'
 }
 
 test {
