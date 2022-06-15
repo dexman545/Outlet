@@ -61,7 +61,7 @@ class McVersionWorker {
         LinkedHashSet<String> list = new LinkedHashSet<String>()
 
         VersionPredicate x = VersionPredicateParser.parse(range)
-        def mcVersions = new JsonSlurper().parse(new URL("https://launchermeta.mojang.com/mc/game/version_manifest_v2.json"))
+        def mcVersions = new JsonSlurper().parse(new URL("https://piston-meta.mojang.com/mc/game/version_manifest_v2.json"))
         for (Object mcver : mcVersions.versions) {
             // Don't go below 1.14.4, mostly because change in version formatting
             if ("1.14.4" == (mcver.id as String)) break
