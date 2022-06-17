@@ -81,7 +81,7 @@ class OutletExtension {
                 return null
             }
             isAlive = true
-            return worker.getAcceptableMcVersions(this.mcVersionRange)
+            return worker.getAcceptableMcVersions(this.mcVersionRange, allowSnapshotsForProject)
         } catch (MalformedURLException e) {
             e.printStackTrace()
         }

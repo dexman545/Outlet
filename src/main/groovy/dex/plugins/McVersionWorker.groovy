@@ -38,7 +38,7 @@ class McVersionWorker {
     }
 
     String getLatestMcForRange(boolean isStable, String range) {
-        def x = getAcceptableMcVersions(range) // Pull list specific for the given range
+        def x = getAcceptableMcVersions(range, !isStable) // Pull list specific for the given range
         if (!isStable && x.contains(mcVersions.first().version)) return mcVersions.first().version
         for (LinkedHashMap mcVer : mcVersions) {
             if (mcVer.stable && x.contains(mcVer.version)) return mcVer.version
@@ -53,7 +53,7 @@ class McVersionWorker {
      * @return the list of acceptable MC versions
      */
     //todo respect snapshot control
-    LinkedHashSet<String> getAcceptableMcVersions(String range) throws MalformedURLException {
+    LinkedHashSet<String> getAcceptableMcVersions(String range, boolean allowSnapshots) throws MalformedURLException {
         if (mcVersionsCache != null && mcVersionsCache.first == range) {
             return mcVersionsCache.second
         }
@@ -65,6 +65,7 @@ class McVersionWorker {
         for (Object mcver : mcVersions.versions) {
             // Don't go below 1.14.4, mostly because change in version formatting
             if ("1.14.4" == (mcver.id as String)) break
+            if (!allowSnapshots && (mcver.type as String) == 'snapshot') continue
 
             String semverMc = genMcVersionString(mcver.id as String, mcver.url as String)
             SemanticVersion v = new SemanticVersionImpl(semverMc, false)
