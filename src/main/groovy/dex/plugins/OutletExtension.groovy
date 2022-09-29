@@ -60,13 +60,15 @@ class OutletExtension {
     protected FabricVersionWorker worker
     private boolean isAlive = false
     private Project project
+    public boolean hasErrored = false
 
     OutletExtension(Project project) {
         this.project = project
         try {
             this.worker = new FabricVersionWorker()
-        } catch (MalformedURLException e) {
+        } catch (Exception e) {
             e.printStackTrace()
+            hasErrored = true
         }
     }
 
@@ -75,16 +77,19 @@ class OutletExtension {
      * Can be used for automated Modrinth upload
      */
     Set<String> mcVersions() {
-        try {
-            if (mcVersionRange == null) {
-                System.out.println("Please specify an MC version range, such as '*' or '>=1.16-alpha.20.22.a'")
-                return null
+        if (!hasErrored) {
+            try {
+                if (mcVersionRange == null) {
+                    System.out.println("Please specify an MC version range, such as '*' or '>=1.16-alpha.20.22.a'")
+                    return null
+                }
+                isAlive = true
+                return worker.getAcceptableMcVersions(this.mcVersionRange, allowSnapshotsForProject)
+            } catch (MalformedURLException e) {
+                e.printStackTrace()
             }
-            isAlive = true
-            return worker.getAcceptableMcVersions(this.mcVersionRange, allowSnapshotsForProject)
-        } catch (MalformedURLException e) {
-            e.printStackTrace()
         }
+
         return null
     }
 
@@ -93,7 +98,10 @@ class OutletExtension {
      */
     Set<String> curseforgeMcVersions() {
         this.establishLiving()
-        return worker.getMcVersionsForCurseforge(this.mcVersions())
+        if (!hasErrored) {
+            return worker.getMcVersionsForCurseforge(this.mcVersions())
+        }
+        throw new RuntimeException("Could not init. Outlet")
     }
 
     /**
@@ -101,18 +109,20 @@ class OutletExtension {
      */
     String latestMc() {
         this.establishLiving()
-        def v
-        if (this.latestMcRespectsRange) {
-            v = worker.getLatestMcForRange(!this.allowSnapshotsForProject, this.mcVersionRange)
-        } else {
-            v = worker.getLatestMc(!this.allowSnapshotsForProject)
+        if (!hasErrored) {
+            def v
+            if (this.latestMcRespectsRange) {
+                v = worker.getLatestMcForRange(!this.allowSnapshotsForProject, this.mcVersionRange)
+            } else {
+                v = worker.getLatestMc(!this.allowSnapshotsForProject)
+            }
+
+            if (v != "" || v != null) {
+                return v
+            }
         }
 
-        if (v == "" || v == null) {
-            return VersionCodec.readProperty(propertiesFile, propertyKeys, 'minecraft')
-        }
-
-        return v
+        return VersionCodec.readProperty(propertiesFile, propertyKeys, 'minecraft')
     }
 
     /**
@@ -129,7 +139,11 @@ class OutletExtension {
      */
     Integer javaVersion(String mcVer) {
         this.establishLiving()
-        worker.mcVer2JavaVer.get(mcVer)
+        if (!hasErrored) {
+            return worker.mcVer2JavaVer.get(mcVer)
+        }
+
+        return 8
     }
 
     /**
@@ -138,13 +152,17 @@ class OutletExtension {
      */
     Integer javaLanguageCompatibility() {
         this.establishLiving()
-        def minJava = worker.mcVer2JavaVer.get(mcVersions().first())
-        mcVersions().forEach {
-            def j = worker.mcVer2JavaVer.get(it)
-            minJava = Math.min(minJava, j)
+        if (!hasErrored) {
+            def minJava = worker.mcVer2JavaVer.get(mcVersions().first())
+            mcVersions().forEach {
+                def j = worker.mcVer2JavaVer.get(it)
+                minJava = Math.min(minJava, j)
+            }
+
+            return minJava
         }
 
-        return minJava
+        return 8
     }
 
     /**
@@ -152,11 +170,14 @@ class OutletExtension {
      */
     String loaderVersion() {
         this.establishLiving()
-        try {
-            return worker.getNewestLoaderVersion()
-        } catch (MalformedURLException e) {
-            e.printStackTrace()
+        if (!hasErrored) {
+            try {
+                return worker.getNewestLoaderVersion()
+            } catch (MalformedURLException e) {
+                e.printStackTrace()
+            }
         }
+
         return VersionCodec.readProperty(propertiesFile, propertyKeys, 'loader')
     }
 
@@ -172,11 +193,14 @@ class OutletExtension {
      */
     String yarnVersion(String mcVer) {
         this.establishLiving()
-        try {
-            return worker.getChosenYarnVersion(mcVer, this.useLatestYarn)
-        } catch (MalformedURLException e) {
-            e.printStackTrace()
+        if (!hasErrored) {
+            try {
+                return worker.getChosenYarnVersion(mcVer, this.useLatestYarn)
+            } catch (MalformedURLException e) {
+                e.printStackTrace()
+            }
         }
+
         return VersionCodec.readProperty(propertiesFile, propertyKeys, 'yarn')
     }
 
@@ -192,16 +216,18 @@ class OutletExtension {
      */
     String fapiVersion(String ver) {
         this.establishLiving()
-        try {
-            return worker.getLatestFapi(ver)
-        } catch (Exception e) {
-            e.printStackTrace()
+        if (!hasErrored) {
+            try {
+                return worker.getLatestFapi(ver)
+            } catch (Exception e) {
+                e.printStackTrace()
+            }
         }
         return VersionCodec.readProperty(propertiesFile, propertyKeys, 'fabric')
     }
 
     private void establishLiving() {
-        if (!this.isAlive) {
+        if (!this.isAlive && !hasErrored) {
             this.mcVersions()
         }
     }
