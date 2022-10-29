@@ -18,7 +18,7 @@ class FabricVersionWorker extends McVersionWorker {
     String getLatestFapi(String projectMcVer) {
         def fapiVersions = null
         def a = FileUtil.fapiArtifact()
-        a.download() // Attempt to update
+        a.download(true) // Attempt to update
         def f = a.fetchArtifact() // Get file
         if (f.text != null && f.text != "") {
             fapiVersions = new XmlSlurper().parseText(f.text)
@@ -43,7 +43,7 @@ class FabricVersionWorker extends McVersionWorker {
     static String getNewestLoaderVersion() {
         def loaderVersions = null
         def a = FileUtil.loaderArtifact()
-        a.download() // Attempt to update
+        a.download(true) // Attempt to update
         def f = a.fetchArtifact() // Get file
         if (f.text != null && f.text != "") {
             loaderVersions = new JsonSlurper().parseText(f.text)
@@ -65,7 +65,7 @@ class FabricVersionWorker extends McVersionWorker {
     static String getChosenYarnVersion(String ver, boolean newest) {
         def yarnVersions = null
         def a = FileUtil.yarnArtifact(ver)
-        a.download() // Attempt to update
+        a.download(true) // Attempt to update
         def f = a.fetchArtifact() // Get file
         if (f.text != null && f.text != "") {
             yarnVersions = new JsonSlurper().parseText(f.text)

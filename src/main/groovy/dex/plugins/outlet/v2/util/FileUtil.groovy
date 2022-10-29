@@ -15,7 +15,7 @@ class FileUtil {
     }
 
     Path globalCache() {
-        project.getGradle().getGradleUserHomeDir().toPath().resolve('caches').resolve('outlet')
+        project.getGradle().getGradleUserHomeDir().toPath().resolve('caches').resolve('outlet').resolve('cache')
     }
 
     static Artifact mc2FabricCacheArtifact() {
