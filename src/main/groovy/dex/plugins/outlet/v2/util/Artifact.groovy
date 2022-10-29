@@ -25,7 +25,7 @@ class Artifact {
     void download(boolean forced) {
         def p = getContainingPath().resolve(name)
         p.parent.toFile().mkdirs()
-        println (forced ? 'Missing artifact: ' : 'Updating artifact: ') + name + ' At: ' + containingPath
+        println ((forced ? 'Missing artifact: ' : 'Updating artifact: ') + name + ' At: ' + containingPath)
         println 'Attempting to download...'
 
         try {
