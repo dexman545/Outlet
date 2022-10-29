@@ -1,6 +1,7 @@
 package dex.plugins
 
 import dex.plugins.outlet.v2.util.FileUtil
+import groovy.time.TimeDuration
 import org.gradle.api.Project
 
 class OutletExtension {
@@ -58,6 +59,14 @@ class OutletExtension {
                                                yarn: 'yarn_mappings', minecraft: 'minecraft_version',
                                                loader: 'fabric_loader']
 
+    /**
+     * The time duration from the last modified file date before attempting to fetch new data.
+     * Set to <code>null</code> to always update.
+     *
+     * Default 12hrs.
+     */
+    public TimeDuration cacheTime = new TimeDuration(0, 12, 0, 0, 0)
+
     protected dex.plugins.outlet.v2.FabricVersionWorker worker
     private boolean isAlive = false
     private Project project
@@ -65,7 +74,7 @@ class OutletExtension {
 
     OutletExtension(Project project) {
         this.project = project
-        new FileUtil(project)
+        FileUtil.init(project, this)
         try {
             this.worker = new dex.plugins.outlet.v2.FabricVersionWorker()
         } catch (Exception e) {

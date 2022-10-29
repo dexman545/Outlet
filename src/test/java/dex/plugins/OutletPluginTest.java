@@ -31,6 +31,11 @@ public class OutletPluginTest {
         assert project.getExtensions().getByType(OutletExtension.class).yarnVersion() != null;
         assert project.getExtensions().getByType(OutletExtension.class).loaderVersion() != null;
         assert project.getExtensions().getByType(OutletExtension.class).latestMc() != null;
+        System.out.println("cached");
+        System.out.println(project.getExtensions().getByType(OutletExtension.class).loaderVersion());
+        project.getExtensions().getByType(OutletExtension.class).cacheTime = null;
+        System.out.println("not cached");
+        System.out.println(project.getExtensions().getByType(OutletExtension.class).loaderVersion());
 
     }
 }

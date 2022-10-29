@@ -69,6 +69,10 @@ outlet.maintainPropertiesFile = true
 // Any key/value pair in the properties file can be updated in this way, not just those Outlet manages!
 // Default: empty
 outlet.propertiesData = ['fabric_version': outlet.fapiVersion()]
+
+// The amount of time to keep the cache before attempting to update
+// Default 12 hrs, set to null to disable
+outlet.cacheTime = new TimeDuration(0, 12, 0, 0, 0)
 ```
 _Note: these can also be set using the `outlet` block!_
 

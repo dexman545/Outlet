@@ -37,14 +37,16 @@ class McVersionWorker {
 
         def usedData = cachedData
 
-        try {
-            def newData = new JsonSlurper(type: JsonParserType.INDEX_OVERLAY).parse(new URL(FileUtil.mc2FabricCacheArtifact().url)) as McOutletMeta
-            if (newData.lastChanged > cachedData.lastChanged) {
-                FileUtil.mc2FabricCacheArtifact().download(true)
-                usedData = newData
+        if (!FileUtil.mc2FabricCacheArtifact().isUpToDate()) {
+            try {
+                def newData = new JsonSlurper(type: JsonParserType.INDEX_OVERLAY).parse(new URL(FileUtil.mc2FabricCacheArtifact().url)) as McOutletMeta
+                if (newData.lastChanged > cachedData.lastChanged) {
+                    FileUtil.mc2FabricCacheArtifact().download(true)
+                    usedData = newData
+                }
+            } catch (Exception e) {
+                e.printStackTrace()
             }
-        } catch (Exception e) {
-            e.printStackTrace()
         }
 
         usedData.versions.each { v ->
