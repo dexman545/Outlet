@@ -131,7 +131,6 @@ class OutletExtension {
      * Get the Java version for the latest MC version
      * Defaults to 8 if it cannot be found
      */
-    @Deprecated
     Integer javaVersion() {
         javaVersion(latestMc())
     }
@@ -140,12 +139,11 @@ class OutletExtension {
      * Get the Java version for the given MC version
      * Defaults to 8 if it cannot be found
      */
-    @Deprecated
     Integer javaVersion(String mcVer) {
-        /*this.establishLiving()
+        this.establishLiving()
         if (!hasErrored) {
             return worker.mcVer2JavaVer.get(mcVer)
-        }*/
+        }
 
         return 8
     }
@@ -154,9 +152,8 @@ class OutletExtension {
      * Get the Java language compatibility level that all versions in {@see #mcVersions} can support
      * Defaults to 8 if it cannot be found
      */
-    @Deprecated
     Integer javaLanguageCompatibility() {
-        /*this.establishLiving()
+        this.establishLiving()
         if (!hasErrored) {
             def minJava = worker.mcVer2JavaVer.get(mcVersions().first())
             mcVersions().forEach {
@@ -165,7 +162,7 @@ class OutletExtension {
             }
 
             return minJava
-        }*/
+        }
 
         return 8
     }

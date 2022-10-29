@@ -2,6 +2,7 @@ package dex.plugins
 
 import groovy.json.JsonSlurper
 
+@Deprecated
 class FabricVersionWorker extends McVersionWorker {
     FabricVersionWorker() throws MalformedURLException {
         super()

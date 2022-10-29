@@ -10,6 +10,7 @@ import net.fabricmc.loader.impl.util.version.VersionPredicateParser
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
+@Deprecated
 class McVersionWorker {
     private static final Pattern VERSION_PATTERN = Pattern.compile("\\d+\\.\\d+(\\.\\d+)?")
     protected ArrayList<LinkedHashMap> mcVersions

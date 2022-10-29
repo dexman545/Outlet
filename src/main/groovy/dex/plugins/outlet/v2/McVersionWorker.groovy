@@ -18,10 +18,8 @@ class McVersionWorker {
 
     //protected ArrayList<LinkedHashMap> mcVersions
     protected Map<String, String> mcVer2Semver
-    protected Map<String, Integer> mcVer2JavaVer
+    public Map<String, Integer> mcVer2JavaVer
     private Tuple2<String, Set<String>> mcVersionsCache
-
-    //todo pull java version from meta
 
     McVersionWorker() throws MalformedURLException {
         this.mcVer2Semver = new LinkedHashMap<>()
@@ -51,6 +49,7 @@ class McVersionWorker {
 
         usedData.versions.each { v ->
             mcVer2Semver.put(v.id, v.normalized)
+            mcVer2JavaVer.put(v.id, v.javaVersion)
         }
     }
 
