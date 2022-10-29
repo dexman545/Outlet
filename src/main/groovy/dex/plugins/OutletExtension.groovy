@@ -175,7 +175,7 @@ class OutletExtension {
         if (!hasErrored) {
             try {
                 return worker.getNewestLoaderVersion()
-            } catch (MalformedURLException e) {
+            } catch (Exception e) {
                 e.printStackTrace()
             }
         }
@@ -198,7 +198,7 @@ class OutletExtension {
         if (!hasErrored) {
             try {
                 return worker.getChosenYarnVersion(mcVer, this.useLatestYarn)
-            } catch (MalformedURLException e) {
+            } catch (Exception e) {
                 e.printStackTrace()
             }
         }
@@ -220,7 +220,7 @@ class OutletExtension {
         this.establishLiving()
         if (!hasErrored) {
             try {
-                return worker.getLatestFapi(ver)//todo null handling
+                return worker.getLatestFapi(ver)
             } catch (Exception e) {
                 e.printStackTrace()
             }

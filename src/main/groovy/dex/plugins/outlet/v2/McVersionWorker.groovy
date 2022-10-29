@@ -1,7 +1,7 @@
 package dex.plugins.outlet.v2
 
 import dex.plugins.outlet.v2.util.FileUtil
-import dex.plugins.outlet.v2.util.JsonFormat
+import dex.plugins.outlet.v2.util.McOutletMeta
 import groovy.json.JsonParserType
 import groovy.json.JsonSlurper
 import net.fabricmc.loader.api.SemanticVersion
@@ -30,15 +30,15 @@ class McVersionWorker {
     private void init() {
         def f = FileUtil.mc2FabricCacheArtifact().fetchArtifact()
 
-        def cachedData = new JsonFormat(lastChanged: Date.from(ZonedDateTime.of(2012, 1, 1, 0, 0, 0, 0, ZoneId.systemDefault()).toInstant()), versions: [])
+        def cachedData = new McOutletMeta(lastChanged: Date.from(ZonedDateTime.of(2012, 1, 1, 0, 0, 0, 0, ZoneId.systemDefault()).toInstant()), versions: [])
         if (f.text != null && f.text != "") {
-            cachedData = new JsonSlurper(type: JsonParserType.INDEX_OVERLAY).parseText(f.text) as JsonFormat
+            cachedData = new JsonSlurper(type: JsonParserType.INDEX_OVERLAY).parseText(f.text) as McOutletMeta
         }
 
         def usedData = cachedData
 
         try {
-            def newData = new JsonSlurper(type: JsonParserType.INDEX_OVERLAY).parse(new URL(FileUtil.mc2FabricCacheArtifact().url)) as JsonFormat
+            def newData = new JsonSlurper(type: JsonParserType.INDEX_OVERLAY).parse(new URL(FileUtil.mc2FabricCacheArtifact().url)) as McOutletMeta
             if (newData.lastChanged > cachedData.lastChanged) {
                 FileUtil.mc2FabricCacheArtifact().download()
                 usedData = newData

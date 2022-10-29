@@ -1,5 +1,6 @@
 package dex.plugins.outlet.v2
 
+import dex.plugins.outlet.v2.util.FileUtil
 import groovy.json.JsonSlurper
 
 class FabricVersionWorker extends McVersionWorker {
@@ -14,9 +15,14 @@ class FabricVersionWorker extends McVersionWorker {
      *
      * @return latest fapi version. If not found, returns the version in gradle.properties
      */
-    String getLatestFapi(String projectMcVer) throws Exception {//todo caching
-        def fapiVersions = new XmlSlurper().parseText(
-                new URL("https://maven.fabricmc.net/net/fabricmc/fabric-api/fabric-api/maven-metadata.xml").text)
+    String getLatestFapi(String projectMcVer) {
+        def fapiVersions = null
+        def a = FileUtil.fapiArtifact()
+        a.download() // Attempt to update
+        def f = a.fetchArtifact() // Get file
+        if (f.text != null && f.text != "") {
+            fapiVersions = new XmlSlurper().parseText(f.text)
+        }
         def mcv = mcVer2Semver.get(projectMcVer)
         if (mcv == null) return null
         String majorMc = fixSnapshot(mcv.substring(0, 4), false)
@@ -26,7 +32,7 @@ class FabricVersionWorker extends McVersionWorker {
             if (target.contains(majorMc)) return version
         }
 
-        return null
+        throw new IllegalStateException("Missing data entirely for FAPI")
     }
 
     /**
@@ -34,10 +40,19 @@ class FabricVersionWorker extends McVersionWorker {
      *
      * @return loader version.
      */
-    static String getNewestLoaderVersion() throws MalformedURLException {
-        def loaderVersions = new JsonSlurper().parse(new URL("https://meta.fabricmc.net/v2/versions/loader/"))
-        assert loaderVersions instanceof ArrayList<LinkedHashMap> // Type check to to remove visual errors
-        return loaderVersions.first().version
+    static String getNewestLoaderVersion() {
+        def loaderVersions = null
+        def a = FileUtil.loaderArtifact()
+        a.download() // Attempt to update
+        def f = a.fetchArtifact() // Get file
+        if (f.text != null && f.text != "") {
+            loaderVersions = new JsonSlurper().parseText(f.text)
+        }
+        if (loaderVersions instanceof ArrayList<LinkedHashMap>) {
+            return loaderVersions.first().version
+        }
+
+        throw new IllegalStateException("Missing data entirely for Loader")
     }
 
     /**
@@ -47,10 +62,18 @@ class FabricVersionWorker extends McVersionWorker {
      * invalidating genSources' output.
      * @return the correct Yarn version.
      */
-    static String getChosenYarnVersion(String ver, boolean newest) throws MalformedURLException {
-        def yarnVersions = new JsonSlurper().parse(
-                new URL("https://meta.fabricmc.net/v2/versions/yarn/${ver}"))
-        assert yarnVersions instanceof ArrayList<LinkedHashMap> // Type check to to remove visual errors
-        return newest ? yarnVersions.first().version : yarnVersions.last().version
+    static String getChosenYarnVersion(String ver, boolean newest) {
+        def yarnVersions = null
+        def a = FileUtil.yarnArtifact(ver)
+        a.download() // Attempt to update
+        def f = a.fetchArtifact() // Get file
+        if (f.text != null && f.text != "") {
+            yarnVersions = new JsonSlurper().parseText(f.text)
+        }
+        if (yarnVersions instanceof ArrayList<LinkedHashMap>) {
+            return newest ? yarnVersions.first().version : yarnVersions.last().version
+        }
+
+        throw new IllegalStateException("Missing data entirely for Yarn of MC${ver}")
     }
 }
