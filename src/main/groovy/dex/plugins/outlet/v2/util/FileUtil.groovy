@@ -22,31 +22,23 @@ class FileUtil {
     }
 
     static Artifact mc2FabricCacheArtifact() {
-        new Artifact(name: 'mc2fabric.json',
-                url: 'https://raw.githubusercontent.com/dexman545/outlet-database/master/mc2fabric.json',
-                containingPath: INSTANCE.globalCache(),
-                updateFreq: INSTANCE.time())
+        buildArtifact('mc2fabric.json', 'https://raw.githubusercontent.com/dexman545/outlet-database/master/mc2fabric.json')
     }
 
     static Artifact fapiArtifact() {
-        new Artifact(name: 'fapi.xml',
-                url: 'https://maven.fabricmc.net/net/fabricmc/fabric-api/fabric-api/maven-metadata.xml',
-                containingPath: INSTANCE.globalCache(),
-                updateFreq: INSTANCE.time())
+        buildArtifact('fapi.xml', 'https://maven.fabricmc.net/net/fabricmc/fabric-api/fabric-api/maven-metadata.xml')
     }
 
     static Artifact yarnArtifact(String ver) {
-        new Artifact(name: "yarn_mc${ver}.json",
-                url: "https://meta.fabricmc.net/v2/versions/yarn/${ver}",
-                containingPath: INSTANCE.globalCache(),
-                updateFreq: INSTANCE.time())
+        buildArtifact("yarn_mc${ver}.json", "https://meta.fabricmc.net/v2/versions/yarn/${ver}")
     }
 
     static Artifact loaderArtifact() {
-        new Artifact(name: 'loader.json',
-                url: 'https://meta.fabricmc.net/v2/versions/loader/',
-                containingPath: INSTANCE.globalCache(),
-                updateFreq: INSTANCE.time())
+        buildArtifact('loader.json', 'https://meta.fabricmc.net/v2/versions/loader/')
+    }
+
+    static Artifact buildArtifact(String name, String url, String containingPath = INSTANCE.globalCache()) {
+        return new Artifact(name: name, url: url, containingPath: containingPath, updateFreq: INSTANCE.time())
     }
 
     static def init(Project project, OutletExtension extension) {

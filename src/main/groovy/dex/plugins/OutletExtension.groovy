@@ -1,5 +1,7 @@
 package dex.plugins
 
+import dex.plugins.outlet.v2.FabricVersionWorker
+import dex.plugins.outlet.v2.ModrinthWorker
 import dex.plugins.outlet.v2.util.FileUtil
 import groovy.time.TimeDuration
 import org.gradle.api.Project
@@ -67,7 +69,7 @@ class OutletExtension {
      */
     public TimeDuration cacheTime = new TimeDuration(0, 12, 0, 0, 0)
 
-    protected dex.plugins.outlet.v2.FabricVersionWorker worker
+    protected FabricVersionWorker worker
     private boolean isAlive = false
     private Project project
     public boolean hasErrored = false
@@ -76,7 +78,7 @@ class OutletExtension {
         this.project = project
         FileUtil.init(project, this)
         try {
-            this.worker = new dex.plugins.outlet.v2.FabricVersionWorker()
+            this.worker = new FabricVersionWorker()
         } catch (Exception e) {
             e.printStackTrace()
             hasErrored = true
@@ -241,5 +243,15 @@ class OutletExtension {
         if (!this.isAlive && !hasErrored) {
             this.mcVersions()
         }
+    }
+
+    String latestModrinthModVersion(String modNameOrId, Set<String> mcVersions = mcVersions(), Set<String> loaders = ["fabric"], Boolean featuredOnly = null) {
+        try {
+            return ModrinthWorker.latestModVersion(modNameOrId, mcVersions, loaders, featuredOnly)
+        } catch(Exception e) {
+
+        }
+
+        return VersionCodec.readProperty(propertiesFile, propertyKeys, modNameOrId + '_version')
     }
 }

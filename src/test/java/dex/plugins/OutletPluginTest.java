@@ -5,6 +5,8 @@ import org.gradle.testfixtures.ProjectBuilder;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
+import java.util.Collections;
+import java.util.HashSet;
 
 public class OutletPluginTest {
 
@@ -18,24 +20,26 @@ public class OutletPluginTest {
             a.allowSnapshotsForProject = true;
             a.propertiesFile = new File("gradle.properties");
         });
-        System.out.println(project.getExtensions().getByType(OutletExtension.class).latestMc());
-        System.out.println(project.getExtensions().getByType(OutletExtension.class).mcVersions());
-        System.out.println(project.getExtensions().getByType(OutletExtension.class).javaVersion());
-        System.out.println(project.getExtensions().getByType(OutletExtension.class).curseforgeMcVersions());
-        System.out.println(project.getExtensions().getByType(OutletExtension.class).javaLanguageCompatibility());
-        System.out.println(project.getExtensions().getByType(OutletExtension.class).fapiVersion());
-        //project.getExtensions().getByType(OutletExtension.class).meh();
-        assert project.getExtensions().getByType(OutletExtension.class).mcVersions() != null;
-        assert project.getExtensions().getByType(OutletExtension.class).fapiVersion() != null;
-        assert project.getExtensions().getByType(OutletExtension.class).curseforgeMcVersions() != null;
-        assert project.getExtensions().getByType(OutletExtension.class).yarnVersion() != null;
-        assert project.getExtensions().getByType(OutletExtension.class).loaderVersion() != null;
-        assert project.getExtensions().getByType(OutletExtension.class).latestMc() != null;
+        OutletExtension murry = project.getExtensions().getByType(OutletExtension.class);
+        System.out.println(murry.latestMc());
+        System.out.println(murry.mcVersions());
+        System.out.println(murry.javaVersion());
+        System.out.println(murry.curseforgeMcVersions());
+        System.out.println(murry.javaLanguageCompatibility());
+        System.out.println(murry.fapiVersion());
+        assert murry.mcVersions() != null;
+        assert murry.fapiVersion() != null;
+        assert murry.curseforgeMcVersions() != null;
+        assert murry.yarnVersion() != null;
+        assert murry.loaderVersion() != null;
+        assert murry.latestMc() != null;
         System.out.println("cached");
-        System.out.println(project.getExtensions().getByType(OutletExtension.class).loaderVersion());
-        project.getExtensions().getByType(OutletExtension.class).cacheTime = null;
+        System.out.println(murry.loaderVersion());
+        murry.cacheTime = null;
         System.out.println("not cached");
-        System.out.println(project.getExtensions().getByType(OutletExtension.class).loaderVersion());
+        System.out.println(murry.loaderVersion());
+        
+        System.out.println(murry.latestModrinthModVersion("modmenu", Collections.singleton("1.18.2")));
 
     }
 }
