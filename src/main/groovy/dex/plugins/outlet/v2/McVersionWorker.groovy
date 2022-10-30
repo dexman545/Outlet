@@ -2,6 +2,7 @@ package dex.plugins.outlet.v2
 
 import dex.plugins.outlet.v2.util.FileUtil
 import dex.plugins.outlet.v2.util.McOutletMeta
+import groovy.json.JsonOutput
 import groovy.json.JsonParserType
 import groovy.json.JsonSlurper
 import net.fabricmc.loader.api.SemanticVersion
@@ -41,7 +42,7 @@ class McVersionWorker {
             try {
                 def newData = new JsonSlurper(type: JsonParserType.INDEX_OVERLAY).parse(new URL(FileUtil.mc2FabricCacheArtifact().url)) as McOutletMeta
                 if (newData.lastChanged > cachedData.lastChanged) {
-                    FileUtil.mc2FabricCacheArtifact().download(true)
+                    f.write(JsonOutput.prettyPrint(JsonOutput.toJson(newData)))
                     usedData = newData
                 }
             } catch (Exception e) {
