@@ -42,7 +42,7 @@ gradlePlugin {
     plugins {
         outlet {
             //noinspection GroovyAssignabilityCheck
-            id = 'dex.plugins.outlet'
+            id = 'io.github.dexman545.outlet'
             //noinspection GroovyAssignabilityCheck
             implementationClass = 'dex.plugins.OutletPlugin'
             displayName = 'Outlet'
