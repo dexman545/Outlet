@@ -21,23 +21,7 @@ feeding it options, then calling the methods. The latter two occur anywhere
 after application.
 
 ### Application
-[![](https://jitpack.io/v/dexman545/Outlet.svg)](https://jitpack.io/#dexman545/Outlet)
-
-At the top of `build.gradle`, add (merging as needed):
-```groovy
-buildscript {
-    repositories {
-        maven {url 'https://jitpack.io'}
-    }
-    dependencies {
-        classpath 'com.github.dexman545:Outlet:<version>' // For bleeding-edge, use master-SNAPSHOT
-    }
-}
-```
-Beneath the `plugins` block, add (merging as needed):
-```groovy
-apply plugin: 'dex.plugins.outlet'
-```
+[Add Outlet as you would using any other gradle plugin.](https://plugins.gradle.org/plugin/io.github.dexman545.outlet)
 
 ### Telling it what you want
 **_Dummy values in use!_**
