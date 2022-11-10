@@ -13,7 +13,7 @@ public class OutletPluginTest {
     @Test
     public void mcVersionGenTest() {
         Project project = ProjectBuilder.builder().build();
-        project.getPluginManager().apply("dex.plugins.outlet");
+        project.getPluginManager().apply("io.github.dexman545.outlet");
         project.getExtensions().configure(OutletExtension.class, (a) -> {
             a.mcVersionRange = ">=1.18.2-alpha.22.6.a";//">=1.18 <1.19-"
             a.propertiesData.put("meh", 1);
