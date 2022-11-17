@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.util.Collections;
-import java.util.HashSet;
 
 public class OutletPluginTest {
 
@@ -17,7 +16,7 @@ public class OutletPluginTest {
         project.getExtensions().configure(OutletExtension.class, (a) -> {
             a.mcVersionRange = ">=1.18.2-alpha.22.6.a";//">=1.18 <1.19-"
             a.propertiesData.put("meh", 1);
-            a.allowSnapshotsForProject = true;
+            a.setAllowSnapshotsForProject(true);
             a.propertiesFile = new File("gradle.properties");
         });
         OutletExtension murry = project.getExtensions().getByType(OutletExtension.class);

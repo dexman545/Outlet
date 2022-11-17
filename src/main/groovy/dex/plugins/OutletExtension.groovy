@@ -3,6 +3,7 @@ package dex.plugins
 import dex.plugins.outlet.v2.FabricVersionWorker
 import dex.plugins.outlet.v2.ModrinthWorker
 import dex.plugins.outlet.v2.util.FileUtil
+import dex.plugins.outlet.v2.util.ReleaseType
 import groovy.time.TimeDuration
 import org.gradle.api.Project
 
@@ -15,8 +16,13 @@ class OutletExtension {
     public String mcVersionRange
     /**
      * Whether {@see latestMc()} should include non-release versions of Minecraft
+     * @deprecated {@see allowedReleaseType}
      */
-    public boolean allowSnapshotsForProject = true
+    @Deprecated
+    boolean allowSnapshotsForProject = true
+
+    public Set<ReleaseType> allowedReleaseTypes = [ReleaseType.RELEASE] as Set
+
     /**
      * Whether {@see yarnVersion()} should return the latest yarn version or the earliest yarn version for a given
      * Minecraft version
@@ -73,10 +79,18 @@ class OutletExtension {
     private boolean isAlive = false
     private Project project
     public boolean hasErrored = false
+    private boolean hasWarned = false
 
     OutletExtension(Project project) {
         this.project = project
         FileUtil.init(project, this)
+
+        if (allowSnapshotsForProject) {
+            allowedReleaseTypes += ReleaseType.SNAPSHOT
+        } else {
+            allowedReleaseTypes -= ReleaseType.SNAPSHOT
+        }
+
         try {
             this.worker = new FabricVersionWorker()
         } catch (Exception e) {
@@ -90,6 +104,14 @@ class OutletExtension {
      * Can be used for automated Modrinth upload
      */
     Set<String> mcVersions() {
+        return mcVersions(true)
+    }
+
+    /**
+     * Get the set of Minecraft version strings
+     * Can be used for automated Modrinth upload
+     */
+    Set<String> mcVersions(boolean strip) {
         if (!hasErrored) {
             try {
                 if (mcVersionRange == null) {
@@ -97,7 +119,14 @@ class OutletExtension {
                     return null
                 }
                 isAlive = true
-                return worker.getAcceptableMcVersions(this.mcVersionRange, allowSnapshotsForProject)
+                def s = allowedReleaseTypes
+                if (strip && s.contains(ReleaseType.EXPERIMENT)) {
+                    s -= ReleaseType.EXPERIMENT
+                    if (!hasWarned)
+                        project.logger.warn("Stripping experimental versions from mcVersions(), use mcVersions(false) to preserve them.")
+                    hasWarned = true
+                }
+                return worker.getAcceptableMcVersions(this.mcVersionRange, s)
             } catch (MalformedURLException e) {
                 e.printStackTrace()
             }
@@ -125,9 +154,9 @@ class OutletExtension {
         if (!hasErrored) {
             def v
             if (this.latestMcRespectsRange) {
-                v = worker.getLatestMcForRange(!this.allowSnapshotsForProject, this.mcVersionRange)
+                v = worker.getLatestMcForRange(allowedReleaseTypes, this.mcVersionRange)
             } else {
-                v = worker.getLatestMc(!this.allowSnapshotsForProject)
+                v = worker.getLatestMc(allowedReleaseTypes)
             }
 
             if (v != "" || v != null) {
@@ -253,5 +282,16 @@ class OutletExtension {
         }
 
         return VersionCodec.readProperty(propertiesFile, propertyKeys, modNameOrId + '_version')
+    }
+
+    @Deprecated
+    // Allows option to be deprecated
+    void setAllowSnapshotsForProject(boolean yes) {
+        allowSnapshotsForProject = yes
+        if (allowSnapshotsForProject) {
+            allowedReleaseTypes += ReleaseType.SNAPSHOT
+        } else {
+            allowedReleaseTypes -= ReleaseType.SNAPSHOT
+        }
     }
 }
