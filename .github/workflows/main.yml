@@ -4,6 +4,7 @@ on:
   push:
     tags:
       - '*.*.*'
+  workflow_dispatch:
 
 jobs:
   publish:
@@ -11,9 +12,10 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Set up JDK 17
-        uses: actions/setup-java@v2
+        uses: actions/setup-java@v3.12.0
         with:
           java-version: 17
+          distribution: jdk
 
       - name: Cache Gradle files
         uses: actions/cache@v2
