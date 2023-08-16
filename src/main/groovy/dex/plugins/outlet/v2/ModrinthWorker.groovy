@@ -14,6 +14,9 @@ class ModrinthWorker {
         }
 
         if (modVersions instanceof ArrayList<LinkedHashMap>) {
+            if (modVersions.isEmpty()) {
+                return null
+            }
             return modVersions.first().version_number
         }
 

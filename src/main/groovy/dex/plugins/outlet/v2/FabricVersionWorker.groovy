@@ -16,6 +16,16 @@ class FabricVersionWorker extends McVersionWorker {
      * @return latest fapi version. If not found, returns the version in gradle.properties
      */
     String getLatestFapi(String projectMcVer) {
+        // Try lookup exact MC version build on Modrinth first
+        try {
+            def v = ModrinthWorker.latestModVersion('fabric-api', Collections.singleton(projectMcVer))
+            if (v != null) {
+                return v
+            }
+        } catch (IllegalStateException e) {
+            e.printStackTrace()
+        }
+
         def fapiVersions = null
         def a = FileUtil.fapiArtifact()
         a.download(true) // Attempt to update
