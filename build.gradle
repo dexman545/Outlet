@@ -2,7 +2,7 @@ plugins {
     id 'java-gradle-plugin'
     id 'maven-publish'
     id 'groovy'
-    id 'com.gradle.plugin-publish' version '1.0.0'
+    id 'com.gradle.plugin-publish' version '1.1.0'
 }
 
 archivesBaseName = project.archives_base_name
@@ -39,6 +39,9 @@ tasks.withType(JavaCompile).configureEach {
 
 
 gradlePlugin {
+    website = 'https://github.com/dexman545/Outlet'
+    vcsUrl = 'https://github.com/dexman545/Outlet'
+
     plugins {
         outlet {
             //noinspection GroovyAssignabilityCheck
@@ -46,6 +49,8 @@ gradlePlugin {
             //noinspection GroovyAssignabilityCheck
             implementationClass = 'dex.plugins.OutletPlugin'
             displayName = 'Outlet'
+            description = 'A plugin to aid in the development and publishing of Minecraft mods!'
+            tags.set(['publish', 'mods', 'minecraft'])
         }
     }
 }
@@ -65,11 +70,4 @@ dependencies {
 
 test {
     useJUnitPlatform()
-}
-
-pluginBundle {
-    website = 'https://github.com/dexman545/Outlet'
-    vcsUrl = 'https://github.com/dexman545/Outlet'
-    description = 'A plugin to aid in the development and publishing of Minecraft mods!'
-    tags = ['publish', 'mods', 'minecraft']
 }
