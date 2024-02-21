@@ -14,7 +14,7 @@ public class OutletPluginTest {
         Project project = ProjectBuilder.builder().build();
         project.getPluginManager().apply("io.github.dexman545.outlet");
         project.getExtensions().configure(OutletExtension.class, (a) -> {
-            a.mcVersionRange = ">=1.19-alpha.22.16.a <=1.19.2";//">=1.18 <1.19-"
+            a.mcVersionRange = "1.20.2";//">=1.18 <1.19-" >=1.20.2-alpha.23.31.a
             a.propertiesData.put("meh", 1);
             a.setAllowSnapshotsForProject(true);
             a.propertiesFile = new File("gradle.properties");
@@ -42,6 +42,8 @@ public class OutletPluginTest {
         System.out.println(murry.latestModrinthModVersion("fabric-api", Collections.singleton("1.20.2")));
         System.out.println(murry.fapiVersion("1.20.1"));
         System.out.println(murry.fapiVersion("23w32a"));
+        System.out.println(murry.neoforgeVersion("1.20.1"));
+        System.out.println(murry.neoforgeVersion("1.20.4"));
 
     }
 }

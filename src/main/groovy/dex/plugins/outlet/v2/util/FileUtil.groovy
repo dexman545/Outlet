@@ -29,6 +29,10 @@ class FileUtil {
         buildArtifact('fapi.xml', 'https://maven.fabricmc.net/net/fabricmc/fabric-api/fabric-api/maven-metadata.xml')
     }
 
+    static Artifact neoforgeArtifact() {
+        buildArtifact('neoforge.xml', 'https://maven.neoforged.net/releases/net/neoforged/neoforge/maven-metadata.xml')
+    }
+
     static Artifact yarnArtifact(String ver) {
         buildArtifact("yarn_mc${ver}.json", "https://meta.fabricmc.net/v2/versions/yarn/${ver}")
     }

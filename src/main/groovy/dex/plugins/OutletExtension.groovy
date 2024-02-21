@@ -2,6 +2,7 @@ package dex.plugins
 
 import dex.plugins.outlet.v2.FabricVersionWorker
 import dex.plugins.outlet.v2.ModrinthWorker
+import dex.plugins.outlet.v2.NeoForgeVersionWorker
 import dex.plugins.outlet.v2.util.FileUtil
 import dex.plugins.outlet.v2.util.ReleaseType
 import groovy.time.TimeDuration
@@ -75,7 +76,7 @@ class OutletExtension {
      */
     public TimeDuration cacheTime = new TimeDuration(0, 12, 0, 0, 0)
 
-    protected FabricVersionWorker worker
+    protected NeoForgeVersionWorker worker
     private boolean isAlive = false
     private Project project
     public boolean hasErrored = false
@@ -92,7 +93,7 @@ class OutletExtension {
         }
 
         try {
-            this.worker = new FabricVersionWorker()
+            this.worker = new NeoForgeVersionWorker() //todo this is kinda a hack having them inherit like this
         } catch (Exception e) {
             e.printStackTrace()
             hasErrored = true
@@ -266,6 +267,28 @@ class OutletExtension {
             }
         }
         return VersionCodec.readProperty(propertiesFile, propertyKeys, 'fabric')
+    }
+
+    /**
+     * Get the latest Fabric API version for the latest MC version
+     */
+    String neoforgeVersion() {
+        return neoforgeVersion(this.latestMc())
+    }
+
+    /**
+     * Get the latest Fabric API version for the given MC version
+     */
+    String neoforgeVersion(String ver) {
+        this.establishLiving()
+        if (!hasErrored) {
+            try {
+                return worker.getLatestNeoforge(ver)
+            } catch (Exception e) {
+                e.printStackTrace()
+            }
+        }
+        return VersionCodec.readProperty(propertiesFile, propertyKeys, 'neoforge')
     }
 
     private void establishLiving() {
