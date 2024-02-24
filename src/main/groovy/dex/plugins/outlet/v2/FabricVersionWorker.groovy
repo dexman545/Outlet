@@ -3,9 +3,11 @@ package dex.plugins.outlet.v2
 import dex.plugins.outlet.v2.util.FileUtil
 import groovy.json.JsonSlurper
 
-class FabricVersionWorker extends McVersionWorker {
-    FabricVersionWorker() throws MalformedURLException {
-        super()
+class FabricVersionWorker {
+    private final McVersionWorker versionWorker
+
+    FabricVersionWorker(McVersionWorker versionWorker) {
+        this.versionWorker = versionWorker
     }
 
     /**
@@ -33,9 +35,9 @@ class FabricVersionWorker extends McVersionWorker {
         if (f.text != null && f.text != "") {
             fapiVersions = new XmlSlurper().parseText(f.text)
         }
-        def mcv = mcVer2Semver.get(projectMcVer)
+        def mcv = versionWorker.mcVer2Semver.get(projectMcVer)
         if (mcv == null) return null
-        String majorMc = fixSnapshot(mcv.substring(0, 4), false)
+        String majorMc = versionWorker.fixSnapshot(mcv.substring(0, 4), false)
         for (String version : (fapiVersions.versioning.versions.version.list() as List).reverse()) {
             String target = version.split("\\+")[1]
             if (target.contains("build")) break // These versions are old and have useless metadata

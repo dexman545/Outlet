@@ -1,6 +1,7 @@
 package dex.plugins
 
 import dex.plugins.outlet.v2.FabricVersionWorker
+import dex.plugins.outlet.v2.McVersionWorker
 import dex.plugins.outlet.v2.ModrinthWorker
 import dex.plugins.outlet.v2.NeoForgeVersionWorker
 import dex.plugins.outlet.v2.util.FileUtil
@@ -76,7 +77,9 @@ class OutletExtension {
      */
     public TimeDuration cacheTime = new TimeDuration(0, 12, 0, 0, 0)
 
-    protected NeoForgeVersionWorker worker
+    protected McVersionWorker worker
+    protected FabricVersionWorker fabricVersionWorker
+    protected NeoForgeVersionWorker neoForgeVersionWorker
     private boolean isAlive = false
     private Project project
     public boolean hasErrored = false
@@ -93,7 +96,9 @@ class OutletExtension {
         }
 
         try {
-            this.worker = new NeoForgeVersionWorker() //todo this is kinda a hack having them inherit like this
+            this.worker = new McVersionWorker()
+            fabricVersionWorker = new FabricVersionWorker(worker)
+            neoForgeVersionWorker = new NeoForgeVersionWorker(worker)
         } catch (Exception e) {
             e.printStackTrace()
             hasErrored = true
@@ -215,7 +220,7 @@ class OutletExtension {
         this.establishLiving()
         if (!hasErrored) {
             try {
-                return worker.getNewestLoaderVersion()
+                return fabricVersionWorker.getNewestLoaderVersion()
             } catch (Exception e) {
                 e.printStackTrace()
             }
@@ -238,7 +243,7 @@ class OutletExtension {
         this.establishLiving()
         if (!hasErrored) {
             try {
-                return worker.getChosenYarnVersion(mcVer, this.useLatestYarn)
+                return fabricVersionWorker.getChosenYarnVersion(mcVer, this.useLatestYarn)
             } catch (Exception e) {
                 e.printStackTrace()
             }
@@ -261,7 +266,7 @@ class OutletExtension {
         this.establishLiving()
         if (!hasErrored) {
             try {
-                return worker.getLatestFapi(ver)
+                return fabricVersionWorker.getLatestFapi(ver)
             } catch (Exception e) {
                 e.printStackTrace()
             }
@@ -283,7 +288,7 @@ class OutletExtension {
         this.establishLiving()
         if (!hasErrored) {
             try {
-                return worker.getLatestNeoforge(ver)
+                return neoForgeVersionWorker.getLatestNeoforge(ver, true)
             } catch (Exception e) {
                 e.printStackTrace()
             }
