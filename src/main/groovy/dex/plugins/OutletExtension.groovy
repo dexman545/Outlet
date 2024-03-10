@@ -4,6 +4,7 @@ import dex.plugins.outlet.v2.FabricVersionWorker
 import dex.plugins.outlet.v2.McVersionWorker
 import dex.plugins.outlet.v2.ModrinthWorker
 import dex.plugins.outlet.v2.NeoForgeVersionWorker
+import dex.plugins.outlet.v2.ParchmentVersionWorker
 import dex.plugins.outlet.v2.util.FileUtil
 import dex.plugins.outlet.v2.util.ReleaseType
 import groovy.time.TimeDuration
@@ -80,6 +81,7 @@ class OutletExtension {
     protected McVersionWorker worker
     protected FabricVersionWorker fabricVersionWorker
     protected NeoForgeVersionWorker neoForgeVersionWorker
+    protected ParchmentVersionWorker parchementVersionWorker
     private boolean isAlive = false
     private Project project
     public boolean hasErrored = false
@@ -99,6 +101,7 @@ class OutletExtension {
             this.worker = new McVersionWorker()
             fabricVersionWorker = new FabricVersionWorker(worker)
             neoForgeVersionWorker = new NeoForgeVersionWorker(worker)
+            parchementVersionWorker = new ParchmentVersionWorker(worker)
         } catch (Exception e) {
             e.printStackTrace()
             hasErrored = true
@@ -301,6 +304,23 @@ class OutletExtension {
             }
         }
         return VersionCodec.readProperty(propertiesFile, propertyKeys, 'neoforge')
+    }
+
+    /**
+     * Get the latest Parchment version for the given MC version.
+     * Returns a Tuple2 of (mc_ver, parchment_version)
+     */
+    Tuple2<String, String> parchmentVersion(String ver) {
+        this.establishLiving()
+        if (!hasErrored) {
+            try {
+                return parchementVersionWorker.getLatestParchment(ver)
+            } catch (Exception e) {
+                e.printStackTrace()
+            }
+        }
+        return new Tuple2<String, String>(VersionCodec.readProperty(propertiesFile, propertyKeys, 'parchment_mc'),
+                VersionCodec.readProperty(propertiesFile, propertyKeys, 'parchment_mappings'))
     }
 
     private void establishLiving() {

@@ -7,6 +7,9 @@ Provides the following features:
 - Getting the latest or earliest Yarn version for a Minecraft version
 - Getting the latest available version of Fabric loader
 - Getting the latest available version of Fabric API for a Minecraft version
+- Getting the latest available version of Neoforge for a Minecraft version
+- Getting the latest available version of Parchment for a Minecraft version
+  - Will try to find the closest matching Minecraft version that has parchment mappings
 - Getting the required Java version for a Minecraft version
 - Getting the Java compatibility level for a range of Miencraft versions
 - Generating the list of acceptable Minecraft versions based on a given range,

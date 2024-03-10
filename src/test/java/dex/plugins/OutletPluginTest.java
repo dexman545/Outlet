@@ -44,6 +44,10 @@ public class OutletPluginTest {
         System.out.println(murry.fapiVersion("23w32a"));
         System.out.println(murry.neoforgeVersion("1.20.1"));
         System.out.println(murry.neoforgeVersion("1.20.4"));
+        System.out.println(murry.parchmentVersion("1.20.5"));
+        System.out.println(murry.parchmentVersion("1.20.4"));
+        System.out.println(murry.parchmentVersion("1.14.4"));
+        System.out.println(murry.parchmentVersion("24w10a"));
 
     }
 }

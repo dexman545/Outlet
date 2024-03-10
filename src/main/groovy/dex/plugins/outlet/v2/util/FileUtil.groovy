@@ -41,6 +41,14 @@ class FileUtil {
         buildArtifact('loader.json', 'https://meta.fabricmc.net/v2/versions/loader/')
     }
 
+    static Artifact parchmentVersionArtifact() {
+        buildArtifact('parchmentVersion.json', 'https://versioning.parchmentmc.org/versions')
+    }
+
+    static Artifact parchmentMcArtifact(String ver) {
+        buildArtifact("parchmentVersion${ver}.xml", "https://maven.parchmentmc.org/org/parchmentmc/data/parchment-${ver}/maven-metadata.xml")
+    }
+
     static Artifact buildArtifact(String name, String url, String containingPath = INSTANCE.globalCache()) {
         return new Artifact(name: name, url: url, containingPath: containingPath, updateFreq: INSTANCE.time())
     }
