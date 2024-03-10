@@ -275,20 +275,27 @@ class OutletExtension {
     }
 
     /**
-     * Get the latest Fabric API version for the latest MC version
+     * Get the latest Neoforge version for the latest MC version
      */
     String neoforgeVersion() {
         return neoforgeVersion(this.latestMc())
     }
 
     /**
-     * Get the latest Fabric API version for the given MC version
+     * Get the latest Neoforge versionn for the given MC version
      */
     String neoforgeVersion(String ver) {
+        return neoforgeVersion(ver, true)
+    }
+
+    /**
+     * Get the latest Neoforge version for the given MC version
+     */
+    String neoforgeVersion(String ver, boolean allowBeta) {
         this.establishLiving()
         if (!hasErrored) {
             try {
-                return neoForgeVersionWorker.getLatestNeoforge(ver, true)
+                return neoForgeVersionWorker.getLatestNeoforge(ver, allowBeta)
             } catch (Exception e) {
                 e.printStackTrace()
             }

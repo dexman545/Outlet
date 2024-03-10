@@ -36,7 +36,7 @@ class NeoForgeVersionWorker {
         def startOfVersionString = mcv.replaceFirst("1\\.", "") + '.'
 
         for (String version : (neoforgeVersions.versioning.versions.version.list() as List).reverse()) {
-            if (version.endsWith("beta")) continue
+            if (version.endsWith("beta") && !allowBeta) continue
             if (version.startsWith(startOfVersionString)) return version
         }
 
