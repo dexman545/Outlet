@@ -21,7 +21,7 @@ class NeoForgeVersionWorker {
         a.download(true) // Attempt to update
         def f = a.fetchArtifact() // Get file
         if (f.text != null && f.text != "") {
-            neoforgeVersions = new XmlSlurper().parseText(f.text)
+            neoforgeVersions = new groovy.xml.XmlSlurper().parseText(f.text)
         }
         def mcv = versionWorker.mcVer2Semver.get(projectMcVer)
         if (mcv == null) return null
