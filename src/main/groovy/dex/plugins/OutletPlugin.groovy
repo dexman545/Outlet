@@ -25,10 +25,13 @@ class OutletPlugin implements Plugin<PluginAware> {
 
             task.setGroup("outlet")
             task.setDescription('Updates properties file of versions')
-            task.onlyIf {ext.maintainPropertiesFile}
 
-            // This handles runClient and Idea run configs
-            tasks.classes.finalizedBy task
+            if (ext.maintainPropertiesFile.booleanValue()) {
+                task.onlyIf {ext.maintainPropertiesFile}
+
+                // This handles runClient and Idea run configs
+                tasks.named('classes').finalizedBy task
+            }
         }
     }
 

@@ -27,6 +27,9 @@ class VersionCodec {
      * Updates the property files with the latest versions the project is using
      */
     static def readProperty(File properties, Map<String, String> propertiesKeys, String property) {
+        if (properties == null) {
+            return null
+        }
         def versionPropsFile = properties
 
         def config = new PropertiesConfiguration()

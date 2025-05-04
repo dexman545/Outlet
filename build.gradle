@@ -59,13 +59,13 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
     implementation 'com.github.yuchi:npm-semver:1.0.0'
-    implementation 'net.fabricmc:fabric-loader:0.14.10'
+    implementation 'net.fabricmc:fabric-loader:0.16.14'
     implementation "org.ow2.asm:asm:${project.asm_version}"
     implementation "org.ow2.asm:asm-analysis:${project.asm_version}"
     implementation "org.ow2.asm:asm-commons:${project.asm_version}"
     implementation "org.ow2.asm:asm-tree:${project.asm_version}"
     implementation "org.ow2.asm:asm-util:${project.asm_version}"
-    implementation 'org.apache.commons:commons-configuration2:2.7'
+    implementation 'org.apache.commons:commons-configuration2:2.10.1'
 }
 
 test {

@@ -1,14 +1,12 @@
 package dex.plugins
 
-import dex.plugins.outlet.v2.FabricVersionWorker
-import dex.plugins.outlet.v2.McVersionWorker
-import dex.plugins.outlet.v2.ModrinthWorker
-import dex.plugins.outlet.v2.NeoForgeVersionWorker
-import dex.plugins.outlet.v2.ParchmentVersionWorker
+import dex.plugins.outlet.v2.*
 import dex.plugins.outlet.v2.util.FileUtil
 import dex.plugins.outlet.v2.util.ReleaseType
 import groovy.time.TimeDuration
 import org.gradle.api.Project
+import org.gradle.api.initialization.Settings
+import org.gradle.api.plugins.PluginAware
 
 class OutletExtension {
     //todo make setting lazy https://tomgregory.com/introduction-to-gradle-plugins/
@@ -44,7 +42,7 @@ class OutletExtension {
      * The properties file to read values from and optionally update, defaults to gradle.properties.
      * Nondestructive update.
      */
-    public File propertiesFile = project.file('gradle.properties')
+    public File propertiesFile
     /**
      * Whether Outlet should update the version properties file on successful compilation.
      * This also doubles as a side control. E.g., have this evaluate to true in your local dev environment,
@@ -83,13 +81,19 @@ class OutletExtension {
     protected NeoForgeVersionWorker neoForgeVersionWorker
     protected ParchmentVersionWorker parchementVersionWorker
     private boolean isAlive = false
-    private Project project
     public boolean hasErrored = false
     private boolean hasWarned = false
 
-    OutletExtension(Project project) {
-        this.project = project
-        FileUtil.init(project, this)
+    OutletExtension(PluginAware pluginAware) {
+        if (pluginAware instanceof Project) {
+            def project = (Project)pluginAware
+            this.propertiesFile = project.file('gradle.properties')
+            FileUtil.init(project.gradle.gradleUserHomeDir, this)
+        } else if (pluginAware instanceof Settings) {
+            def settings = (Settings)pluginAware
+            FileUtil.init(settings.gradle.gradleUserHomeDir, this)
+            settings.gradle.gradleHomeDir
+        }
 
         if (allowSnapshotsForProject) {
             allowedReleaseTypes += ReleaseType.SNAPSHOT
@@ -132,7 +136,7 @@ class OutletExtension {
                 if (strip && s.contains(ReleaseType.EXPERIMENT)) {
                     s -= ReleaseType.EXPERIMENT
                     if (!hasWarned)
-                        project.logger.warn("Stripping experimental versions from mcVersions(), use mcVersions(false) to preserve them.")
+                        System.err.println("Stripping experimental versions from mcVersions(), use mcVersions(false) to preserve them.")
                     hasWarned = true
                 }
                 return worker.getAcceptableMcVersions(this.mcVersionRange, s)

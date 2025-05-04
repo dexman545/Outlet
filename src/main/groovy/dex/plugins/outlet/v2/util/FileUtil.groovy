@@ -1,24 +1,22 @@
 package dex.plugins.outlet.v2.util
 
 import dex.plugins.OutletExtension
-import org.gradle.api.Project
 
 import java.nio.file.Path
 
 class FileUtil {
     private static FileUtil INSTANCE
-
-    private final Project project
     private final OutletExtension extension
+    private final File rootDir
 
-    private FileUtil(Project project, OutletExtension extension) {
+    private FileUtil(File rootDir, OutletExtension extension) {
+        this.rootDir = rootDir
         this.extension = extension
-        this.project = project
         INSTANCE = this
     }
 
     Path globalCache() {
-        project.getGradle().getGradleUserHomeDir().toPath().resolve('caches').resolve('outlet').resolve('cache')
+        rootDir.toPath().resolve('caches').resolve('outlet').resolve('cache')
     }
 
     static Artifact mc2FabricCacheArtifact() {
@@ -53,9 +51,9 @@ class FileUtil {
         return new Artifact(name: name, url: url, containingPath: containingPath, updateFreq: INSTANCE.time())
     }
 
-    static def init(Project project, OutletExtension extension) {
-        if (INSTANCE == null || (INSTANCE.project != project || INSTANCE.extension != extension)) {
-            new FileUtil(project, extension)
+    static def init(File rootDir, OutletExtension extension) {
+        if (INSTANCE == null || (INSTANCE.rootDir != rootDir || INSTANCE.extension != extension)) {
+            new FileUtil(rootDir, extension)
         }
     }
 
