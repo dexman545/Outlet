@@ -66,7 +66,8 @@ class OutletExtension {
      */
     public Map<String, String> propertyKeys = [java: 'java', fabric: 'fabric_version',
                                                yarn: 'yarn_mappings', minecraft: 'minecraft_version',
-                                               loader: 'fabric_loader']
+                                               loader: 'fabric_loader', neoform: 'neoform_version',
+                                               neoforge: 'neoforge_version']
 
     /**
      * The time duration from the last modified file date before attempting to fetch new data.
