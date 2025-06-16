@@ -282,6 +282,28 @@ class OutletExtension {
     }
 
     /**
+     * Get the latest neoform version for the latest MC version
+     */
+    String neoformVersion() {
+        return neoformVersion(this.latestMc())
+    }
+
+    /**
+     * Get the latest neoform version for the given MC version
+     */
+    String neoformVersion(String ver) {
+        this.establishLiving()
+        if (!hasErrored) {
+            try {
+                return neoForgeVersionWorker.getLatestNeoform(ver)
+            } catch (Exception e) {
+                e.printStackTrace()
+            }
+        }
+        return VersionCodec.readProperty(propertiesFile, propertyKeys, 'neoform_version')
+    }
+
+    /**
      * Get the latest Neoforge version for the latest MC version
      */
     String neoforgeVersion() {
@@ -289,7 +311,7 @@ class OutletExtension {
     }
 
     /**
-     * Get the latest Neoforge versionn for the given MC version
+     * Get the latest Neoforge version for the given MC version
      */
     String neoforgeVersion(String ver) {
         return neoforgeVersion(ver, true)

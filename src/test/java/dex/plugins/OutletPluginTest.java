@@ -48,6 +48,8 @@ public class OutletPluginTest {
         System.out.println(murry.parchmentVersion("1.20.4"));
         System.out.println(murry.parchmentVersion("1.14.4"));
         System.out.println(murry.parchmentVersion("24w10a"));
+        System.out.println(murry.neoformVersion("24w10a"));
+        System.out.println(murry.neoformVersion());
 
     }
 }

@@ -31,6 +31,10 @@ class FileUtil {
         buildArtifact('neoforge.xml', 'https://maven.neoforged.net/releases/net/neoforged/neoforge/maven-metadata.xml')
     }
 
+    static Artifact neoformArtifact(String ver) {
+        buildArtifact("neoforge${ver}.json", "https://maven.neoforged.net/api/maven/latest/version/releases/net/neoforged/neoform?filter=${ver}")
+    }
+
     static Artifact yarnArtifact(String ver) {
         buildArtifact("yarn_mc${ver}.json", "https://meta.fabricmc.net/v2/versions/yarn/${ver}")
     }

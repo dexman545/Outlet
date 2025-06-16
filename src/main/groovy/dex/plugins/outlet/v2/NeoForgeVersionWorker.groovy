@@ -1,6 +1,7 @@
 package dex.plugins.outlet.v2
 
 import dex.plugins.outlet.v2.util.FileUtil
+import groovy.json.JsonSlurper
 
 class NeoForgeVersionWorker {
     private final McVersionWorker versionWorker
@@ -38,6 +39,24 @@ class NeoForgeVersionWorker {
         for (String version : (neoforgeVersions.versioning.versions.version.list() as List).reverse()) {
             if (version.endsWith("beta") && !allowBeta) continue
             if (version.startsWith(startOfVersionString)) return version
+        }
+
+        return null
+    }
+
+    /**
+     * Get the latest neoform version.
+     * Assumes latest is always added to bottom of maven pom.
+     *
+     * @return latest neoform version. If not found, returns the version in gradle.properties
+     */
+    String getLatestNeoform(String projectMcVer) {
+        def a = FileUtil.neoformArtifact(projectMcVer)
+        a.download(true) // Attempt to update
+        def f = a.fetchArtifact() // Get file
+        if (f.text != null && f.text != "") {
+            var j = new JsonSlurper().parseText(f.text)
+            return j["version"]
         }
 
         return null
