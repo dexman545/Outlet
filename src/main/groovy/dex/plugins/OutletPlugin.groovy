@@ -30,7 +30,7 @@ class OutletPlugin implements Plugin<PluginAware> {
                 task.onlyIf {ext.maintainPropertiesFile}
 
                 // This handles runClient and Idea run configs
-                tasks.named('classes').finalizedBy task
+                tasks.named('classes').configure { it.finalizedBy task}
             }
         }
     }
