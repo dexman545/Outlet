@@ -334,6 +334,18 @@ class OutletExtension {
     }
 
     /**
+     * Return the release type of the given MC version
+     */
+    ReleaseType getReleaseType(String ver) {
+        this.establishLiving()
+        if (!hasErrored) {
+            return worker.mcVer2ReleaseType.get(ver)
+        }
+
+        return null
+    }
+
+    /**
      * Get the latest Parchment version for the given MC version.
      * Returns a Tuple2 of (mc_ver, parchment_version)
      */

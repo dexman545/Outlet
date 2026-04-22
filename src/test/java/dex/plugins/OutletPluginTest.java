@@ -50,6 +50,34 @@ public class OutletPluginTest {
         System.out.println(murry.parchmentVersion("24w10a"));
         System.out.println(murry.neoformVersion("24w10a"));
         System.out.println(murry.neoformVersion());
+        System.out.println(murry.getReleaseType("26.1"));
 
+    }
+
+    @Test
+    public void mcVersionGenTest2() {
+        Project project = ProjectBuilder.builder().build();
+        project.getPluginManager().apply("io.github.dexman545.outlet");
+        project.getExtensions().configure(OutletExtension.class, (a) -> {
+            a.mcVersionRange = "^26.1";
+            a.setAllowSnapshotsForProject(true);
+            a.propertiesFile = new File("gradle.properties");
+        });
+        OutletExtension murry = project.getExtensions().getByType(OutletExtension.class);
+        System.out.println(murry.latestMc());
+        System.out.println(murry.mcVersions());
+        System.out.println(murry.javaVersion());
+        System.out.println(murry.curseforgeMcVersions());
+        System.out.println(murry.javaLanguageCompatibility());
+        System.out.println(murry.fapiVersion());
+        assert murry.mcVersions() != null;
+        assert murry.fapiVersion() != null;
+        assert murry.curseforgeMcVersions() != null;
+        assert murry.loaderVersion() != null;
+        assert murry.latestMc() != null;
+        System.out.println(murry.loaderVersion());
+        System.out.println(murry.neoformVersion());
+        System.out.println(murry.neoforgeVersion("26.1"));
+        System.out.println(murry.getReleaseType("26.1"));
     }
 }

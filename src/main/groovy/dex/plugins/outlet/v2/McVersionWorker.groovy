@@ -19,10 +19,12 @@ class McVersionWorker {
     private Tuple2<String, Set<String>> mcVersionsCache
     protected Map<String, String> mcVer2Semver
     public Map<String, Integer> mcVer2JavaVer
+    public Map<String, ReleaseType> mcVer2ReleaseType
 
     McVersionWorker() throws MalformedURLException {
         this.mcVer2Semver = new LinkedHashMap<>()
         this.mcVer2JavaVer = new HashMap<>()
+        this.mcVer2ReleaseType = new HashMap<>()
         this.mcVersions = new ArrayList<>()
         init()
     }
@@ -52,6 +54,7 @@ class McVersionWorker {
         usedData.versions.each { v ->
             mcVer2Semver.put(v.id, v.normalized)
             mcVer2JavaVer.put(v.id, v.javaVersion)
+            mcVer2ReleaseType.put(v.id, v.type)
         }
         mcVersions.addAll(usedData.versions)
     }
