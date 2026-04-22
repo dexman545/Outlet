@@ -1,6 +1,7 @@
 package dex.plugins.outlet.v2
 
 import dex.plugins.outlet.v2.util.FileUtil
+import dex.plugins.outlet.v2.util.ReleaseType
 import groovy.json.JsonSlurper
 
 class NeoForgeVersionWorker {
@@ -27,14 +28,13 @@ class NeoForgeVersionWorker {
         def mcv = versionWorker.mcVer2Semver.get(projectMcVer)
         if (mcv == null) return null
 
-        // Kinda hacky way to check if this is a snapshot
-        if (mcv != projectMcVer) {
+        if (ReleaseType.RELEASE != (versionWorker.mcVer2ReleaseType.get(projectMcVer) as ReleaseType)) {
             return null // Neo doesn't do MC snapshots
         }
 
         // All neo versions start with the minor and patch of a MC version
         // https://docs.neoforged.net/docs/gettingstarted/versioning/#neoforge
-        def startOfVersionString = mcv.replaceFirst("1\\.", "") + '.'
+        def startOfVersionString = mcv.replaceFirst("^1\\.", "") + '.'
 
         for (String version : (neoforgeVersions.versioning.versions.version.list() as List).reverse()) {
             if (version.endsWith("beta") && !allowBeta) continue
