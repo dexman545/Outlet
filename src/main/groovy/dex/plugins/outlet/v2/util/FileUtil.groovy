@@ -20,7 +20,7 @@ class FileUtil {
     }
 
     static Artifact mc2FabricCacheArtifact() {
-        buildArtifact('mc2fabric.json', 'https://raw.githubusercontent.com/dexman545/outlet-database/master/mc2fabric.json')
+        buildArtifact('mc2fabric.json', 'https://dexman545.github.io/outlet-database/mc2fabric.json')
     }
 
     static Artifact fapiArtifact() {
