@@ -378,6 +378,16 @@ class OutletExtension {
         return VersionCodec.readProperty(propertiesFile, propertyKeys, modNameOrId + '_version')
     }
 
+    String latestModrinthModVersionId(String modNameOrId, Set<String> mcVersions = mcVersions(), Set<String> loaders = ["fabric"], Boolean featuredOnly = null) {
+        try {
+            return ModrinthWorker.latestModVersionId(modNameOrId, mcVersions, loaders, featuredOnly)
+        } catch(Exception e) {
+
+        }
+
+        return VersionCodec.readProperty(propertiesFile, propertyKeys, modNameOrId + '_version_id')
+    }
+
     @Deprecated
     // Allows option to be deprecated
     void setAllowSnapshotsForProject(boolean yes) {

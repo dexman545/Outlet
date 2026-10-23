@@ -23,6 +23,25 @@ class ModrinthWorker {
         throw new IllegalStateException("Missing data entirely for Modrinth mod $modNameOrId")
     }
 
+    static def latestModVersionId(String modNameOrId, Set<String> mcVersions, Set<String> loaders = ["fabric"], Boolean featuredOnly = null) {
+        def modVersions = []
+        def a = buildArtifact(modNameOrId, loaders, mcVersions, featuredOnly)
+        a.download(true) // Attempt to update
+        def f = a.fetchArtifact() // Get file
+        if (f.text != null && f.text != "") {
+            modVersions = new JsonSlurper().parseText(f.text)
+        }
+
+        if (modVersions instanceof ArrayList<LinkedHashMap>) {
+            if (modVersions.isEmpty()) {
+                return null
+            }
+            return modVersions.first().id
+        }
+
+        throw new IllegalStateException("Missing data entirely for Modrinth mod $modNameOrId")
+    }
+
     private static def buildArtifact(String modNameOrId, Set<String> loaders, Set<String> mcVersions, Boolean featuredOnly) {
         def name = 'modrinth_' + modNameOrId + '_' + loaders.hashCode() + mcVersions.hashCode() + '_' + featuredOnly
         def url = "https://api.modrinth.com/v2/project/${modNameOrId}/version"
