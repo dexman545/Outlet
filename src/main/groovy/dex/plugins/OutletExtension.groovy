@@ -385,7 +385,7 @@ class OutletExtension {
 
         }
 
-        return VersionCodec.readProperty(propertiesFile, propertyKeys, modNameOrId + '_version')
+        return VersionCodec.readProperty(propertiesFile, propertyKeys, modNameOrId + '_version_id')
     }
 
     @Deprecated
